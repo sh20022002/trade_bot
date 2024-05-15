@@ -23,10 +23,6 @@ def summery(strategy):
 def add_all(df):
     df = add_moa(df)
     df = add_ema(df)
-    df = calculate_tr(df)
-    df = calculate_adx(df)
-    df = calculate_rsi(df)
-    df = calculate_tr
     return df
 
 
@@ -69,6 +65,7 @@ def calculate_rsi(df):
     rs = gain / loss
 
     rsi = 100 - (100 / (1 + rs))
+
     return rsi
 
 

@@ -1,15 +1,19 @@
 '''uses the model to predict stock vulability'''
-# import plots.plot_stock as plot
-from scraping import get_stock_data as stock_data
+import plots
+import scraping
 from functions import add_all
 import pandas as pd
 
 def predict_trend(stock):
-    df = add_all(stock_data(stock))
+    df = scraping.get_stock_data(stock, 300)
+    df = add_all(df)
     return df
 
 def main():
-    print(predict_trend('AAPL'))
+    stock = 'AAPL'
+    df = predict_trend(stock)
+    plots.plot_stock(df, stock)
+    # print(df['Date'])
 
 if __name__ == '__main__':
     main()
