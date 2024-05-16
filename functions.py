@@ -23,6 +23,11 @@ def summery(strategy):
 def add_all(df):
     df = add_moa(df)
     df = add_ema(df)
+    df = calculate_tr(df)
+    adx, dx = calculate_adx(df)
+    df['ADX'] = adx
+    df['DX'] = dx 
+
     return df
 
 
@@ -54,7 +59,7 @@ def add_ema(df):
 
 def calculate_rsi(df):
 
-    window_size = 14
+    window_size = 100
     delta = df.diff()
 
     gain = (delta.where(delta > 0, 0)).rolling(window=window_size).mean()
@@ -68,18 +73,6 @@ def calculate_rsi(df):
 
     return rsi
 
-
-def calculate_dx(df):
-
-    window_size = 14
-
-    tr = df['TR']
-
-    atr = tr.rolling(window=window_size).mean()
-
-    dx = 100 * (atr / df['ADX'])
-
-    return dx
     
 
 def calculate_tr(df):
@@ -98,13 +91,6 @@ def calculate_adx(df):
 
     window_size = 14
     
-    tr1 = abs(df['High'] - df['Low'])
-
-    tr2 = abs(df['High'] - df['Close'].shift())
-
-    tr3 = abs(df['Low'] - df['Close'].shift())
-    df['TR'] = np.maximum(np.maximum(tr1, tr2), tr3)
-
     df['DMplus'] = np.where((df['High'] - df['High'].shift()) > (df['Low'].shift() - df['Low']), 
 
                               np.maximum(df['High'] - df['High'].shift(), 0), 0)
@@ -122,5 +108,5 @@ def calculate_adx(df):
     df['DX'] = 100 * (np.abs(df['DIplus'] - df['DIminus']) / (df['DIplus'] + df['DIminus']))
     df['ADX'] = df['DX'].rolling(window=window_size).mean()
 
-    return df['ADX']
+    return df['ADX'], df['DX']
 

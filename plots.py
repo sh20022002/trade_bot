@@ -10,7 +10,7 @@ def plot_stock(df, stock):
                     open=df['Open'],
                     high=df['High'],
                     low=df['Low'],
-                    close=df['Close'],)])
+                    close=df['Close'])])
 
 
     fig.show()
