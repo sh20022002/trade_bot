@@ -5,7 +5,7 @@ from functions import add_all, calculate_rsi
 import pandas as pd
 
 def predict_trend(stock):
-    df = scraping.get_stock_data(stock, 300)
+    df = scraping.get_stock_data(stock, interval='1h')
     df = add_all(df)
     
     return df
@@ -20,8 +20,9 @@ def main():
     stock = 'AAPL'
     # rsi(stock)
     df = predict_trend(stock)
-    # plots.plot_stock(df, stock)
-    print(df)
+    print(df.columns)
+    plots.plot_stock(df, stock)
+    
 
 if __name__ == '__main__':
     main()

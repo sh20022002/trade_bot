@@ -1,7 +1,6 @@
 '''all web scraping functions'''
 from datetime import date, timedelta
 # from pandas_datareader import data as pdr
-from api_keys import key
 
 import pandas as pd
 import yfinance as yf
@@ -16,7 +15,7 @@ def current_stock_price(symbol):
     pass
     
 
-def get_stock_data(stock, DAYS=100):
+def get_stock_data(stock, DAYS=100, interval='1d'):
     '''
             Get historical stock data for a given stock symbol.
 
@@ -30,12 +29,20 @@ def get_stock_data(stock, DAYS=100):
     end_date = date.today()
     start_date = end_date - timedelta(DAYS)  # days before the end date
     stock_ticker = yf.Ticker(stock)
-    df = stock_ticker.history(start=start_date, end=end_date, interval='1d')
-    df = df.reset_index('Date')
+    df = stock_ticker.history(start=start_date, end=end_date, interval=interval)
+    if (interval == '1h'):
+         df = df.reset_index('Datetime')
+        
+    else:
+        
+        df.reset_index(inplace=True)
+        df.rename(columns={'Date': 'Datetime'}, inplace=True)
+    
     return df
 
 def main():
-    get_stock_data('AAPL')
+    res = get_stock_data('AAPL', interval='1h')
+    print(res.head(10))
 
 
 if __name__=='__main__':
