@@ -1,7 +1,8 @@
 ''' all none class functions'''
 import pandas as pd 
-
 import numpy as np
+
+
 
 def summery(strategy):
 
@@ -21,27 +22,27 @@ def summery(strategy):
     return term + res
 
 def add_all(df):
-    df = add_moa(df)
+    df = add_sma(df)
     df = add_ema(df)
     df = calculate_tr(df)
-    adx, dx = calculate_adx(df)
-    df['ADX'] = adx
-    df['DX'] = dx 
+    df = calculate_adx(df)
+    df = klass_vol(df)
+    
 
     return df
 
 
-def add_moa(df):
+def add_sma(df):
 
     # adds moving avg to df
 
     # smat= stock moving avraege time
     df['avg_high_low'] = (df['High'] + df['Low']) / 2
-    smats = [50, 100, 200]
-
+    smats = [50] # 100 and 200 alsw commen 
+ 
     for smat in smats:
 
-        df[f'moa-{smat}'] = df['avg_high_low'].rolling(smat).mean()
+        df[f'sma-{smat}'] = df['avg_high_low'].rolling(smat).mean()
     return df
 
 
@@ -88,31 +89,32 @@ def calculate_tr(df):
 
 
 def calculate_adx(df):
-
+    df_temp = df.copy()
     window_size = 14
     
-    df['DMplus'] = np.where((df['High'] - df['High'].shift()) > (df['Low'].shift() - df['Low']), 
+    df_temp['DMplus'] = np.where((df['High'] - df['High'].shift()) > (df['Low'].shift() - df['Low']), 
 
                               np.maximum(df['High'] - df['High'].shift(), 0), 0)
-    df['DMminus'] = np.where((df['Low'].shift() - df['Low']) > (df['High'] - df['High'].shift()), 
+    df_temp['DMminus'] = np.where((df['Low'].shift() - df['Low']) > (df['High'] - df['High'].shift()), 
 
                                np.maximum(df['Low'].shift() - df['Low'], 0), 0)
 
-    df['ATR'] = df['TR'].rolling(window=window_size).mean()
-    df['DMplus_smoothed'] = df['DMplus'].rolling(window=window_size).mean()
-    df['DMminus_smoothed'] = df['DMminus'].rolling(window=window_size).mean()
+    df_temp['ATR'] = df['TR'].rolling(window=window_size).mean()
+    df_temp['DMplus_smoothed'] = df_temp['DMplus'].rolling(window=window_size).mean()
+    df_temp['DMminus_smoothed'] = df_temp['DMminus'].rolling(window=window_size).mean()
 
-    df['DIplus'] = 100 * (df['DMplus_smoothed'] / df['ATR'])
-    df['DIminus'] = 100 * (df['DMminus_smoothed'] / df['ATR'])
+    df_temp['DIplus'] = 100 * (df_temp['DMplus_smoothed'] / df_temp['ATR'])
+    df_temp['DIminus'] = 100 * (df_temp['DMminus_smoothed'] / df_temp['ATR'])
 
-    df['DX'] = 100 * (np.abs(df['DIplus'] - df['DIminus']) / (df['DIplus'] + df['DIminus']))
-    df['ADX'] = df['DX'].rolling(window=window_size).mean()
-
-    return df['ADX'], df['DX']
+    df_temp['DX'] = 100 * (np.abs(df_temp['DIplus'] - df_temp['DIminus']) / (df_temp['DIplus'] + df_temp['DIminus']))
+    df['ADX'] = df_temp['DX'].rolling(window=window_size).mean()
+    
+    return df
 
 def klass_vol(df):
     # (ln(high)- ln(low))**2
     #           2             -2(ln(2)-1)(ln(adj close) - ln(open)**2
+    # print(df.columns)
+    df['klass_vol'] = ((np.log(df['High']) - np.log(df['Low']))**2)/2 -(2*np.log(2) -1)*(np.log(df['Close'])-np.log(df['Open']))**2
 
-    df['klass_vol'] = ((np.log(df['High']).np.log(df['Low']))**2)/2 -(2*np.log(2) -1)*(np.log(df['Adj_close'])-np.log(df['Open']))**2
-
+    return df
