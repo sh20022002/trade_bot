@@ -6,7 +6,7 @@ import pandas as pd
 import yfinance as yf
 
 
-def get_stock_news():
+def get_stock_sum(stock):
     '''Get the latest news related to stocks.'''
     pass
 

@@ -6,7 +6,10 @@ import pandas as pd
 
 def plot_stock(df, stock, show='no', interval='1d'):
 
-    df['Volume'] = df['Volume'] / 1000000
+    df['Volume'] = df['Volume'] / 100000
+
+    # temp
+    # df['ADX'] = df['ADX'] / 10
 
     # df['Datetime'] = pd.to_datetime(df['Datetime'])
 

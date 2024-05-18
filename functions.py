@@ -27,6 +27,7 @@ def add_all(df):
     df = calculate_tr(df)
     df = calculate_adx(df)
     df = klass_vol(df)
+    df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
     
 
     return df

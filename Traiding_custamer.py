@@ -1,5 +1,5 @@
 '''all oop(object orianted programing) uses and there functions'''
-from scraping import get_stock_news, current_stock_price, get_stock_data
+from scraping import get_stock_sum, current_stock_price, get_stock_data
 from functions import summery
 from plots import plot_stock
 from database import find_s, remove_from_db, insert_stock
@@ -82,20 +82,27 @@ class client():
 
 
 class compeny:
-    def __init__(self, compeny_name, symbol, summery):
+    def __init__(self, compeny_name, symbol, interval='1h'):
         self.compeny_name = compeny_name
         self.symbol = symbol
-        self.summery = summery
-        self.price = None
+        self.summery = get_stock_sum(self.compeny_name)
+        self.price = current_stock_price(self.symbol)
         self.last_price = None
         self.score = predict_vall()
-        # self.news = get_stock_news()
-        self.show = plot_stock(self.compeny_name)
+        self.sentiment = None
+        self.show = plot_stock(self.get_df, self.compeny_name, show='all', interval=interval)
+        self.interval = interval
+        
     
     @property
     def get_df(self, DAYS=100):
-        return get_stock_data(self.symbol, DAYS)
+        return get_stock_data(self.symbol, interval=self.interval)
         
+
+# for now no use for database because of the small amount data and the need for it to be updated frquantly
+# if will be used for more then one costomer will need a database and methods to update all data frequantly 
+# and there will be an advange for bigger usege doo to the better accessing times and aficcentce to run and grow
+# --needs an updated aprouch for scallability
 
     
     def add_stock(self, compeny_name, symbol, summery):
