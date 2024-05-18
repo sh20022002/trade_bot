@@ -59,7 +59,7 @@ def add_ema(df):
 
 def calculate_rsi(df):
 
-    window_size = 100
+    window_size = 20
     delta = df.diff()
 
     gain = (delta.where(delta > 0, 0)).rolling(window=window_size).mean()
@@ -109,4 +109,10 @@ def calculate_adx(df):
     df['ADX'] = df['DX'].rolling(window=window_size).mean()
 
     return df['ADX'], df['DX']
+
+def klass_vol(df):
+    # (ln(high)- ln(low))**2
+    #           2             -2(ln(2)-1)(ln(adj close) - ln(open)**2
+
+    df['klass_vol'] = ((np.log(df['High']).np.log(df['Low']))**2)/2 -(2*np.log(2) -1)*(np.log(df['Adj_close'])-np.log(df['Open']))**2
 
