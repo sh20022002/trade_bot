@@ -27,6 +27,7 @@ def add_all(df):
     df = calculate_tr(df)
     df = calculate_adx(df)
     df = klass_vol(df)
+    df = volatility(df)
     df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
     
 
@@ -50,7 +51,7 @@ def add_sma(df):
 
 def add_ema(df):
 
-    window_size = 14  # Specify the window size for EMA calculation
+    window_size = 50  # Specify the window size for EMA calculation
 
     alpha = 2 / (window_size + 1)  # Calculate the smoothing factor (alpha)
 
@@ -118,4 +119,8 @@ def klass_vol(df):
     # print(df.columns)
     df['klass_vol'] = ((np.log(df['High']) - np.log(df['Low']))**2)/2 -(2*np.log(2) -1)*(np.log(df['Close'])-np.log(df['Open']))**2
 
+    return df
+
+def volatility(df):
+    df['Change'] = df['Close'] - df['Open']
     return df

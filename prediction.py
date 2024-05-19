@@ -20,8 +20,8 @@ def main():
     stock = 'NVDA'
     # rsi(stock)
     df = predict_trend(stock)
-    # print(df.columns)
-    plots.plot_stock(df, stock, show='all', interval='1h')
+    print(df['Change'])
+    # plots.plot_stock(df, stock, show='all', interval='1h')
     
 
 if __name__ == '__main__':
