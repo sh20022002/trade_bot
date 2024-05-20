@@ -7,6 +7,32 @@ from training import train_hmm
 from prediction import predict_next_state_and_probabilities, stock_and_tecnical
 
 class client():
+    """
+    Represents a client in a trading system.
+
+    Attributes:
+    - name (str): The name of the client.
+    - age (int): The age of the client.
+    - profession (str): The profession of the client.
+    - cash (float): The amount of cash the client has.
+    - transactions (list): A list of completed transactions made by the client.
+    - open_transactions (list): A list of open transactions made by the client.
+    - portfolio (list): A list of symbols in the client's portfolio.
+    - stock_value (float): The total value of stocks owned by the client.
+    """
+
+    def __init__(self, name, age, profession, cash):
+        self.name = name
+        self.age = age
+        self.profession = profession
+        self.cash = cash
+        self.transactions = []
+        self.open_transactions = []
+        self.portfolio = []
+        self.stock_value = 0
+
+    # Rest of the code...
+class client():
     def __init__(self, name, age, profetion, cash):
         self.name = name
         self.age = age
@@ -20,6 +46,19 @@ class client():
     
     
     def stock(self, symbol, amount, action, strategy, target_price=None):
+        """
+        Perform a stock transaction for the client.
+
+        Args:
+        - symbol (str): The symbol of the stock.
+        - amount (int): The amount of stock to buy or sell.
+        - action (str): The action to perform, either 'buy' or 'sale'.
+        - strategy (str): The trading strategy to use.
+        - target_price (float, optional): The target price for the transaction.
+
+        Returns:
+        - str: A string representing the transaction details.
+        """
         if action == 'sale':
             buy = transaction(symbol, amount, strategy, buy=False, target_price=None)
         else:
@@ -46,6 +85,12 @@ class client():
             return f'{action}: {buy.symbol}---price: {buy.price_in_sale}---{strategy_sum}'
 
     def transactions__str__(self):
+        """
+        Get a string representation of the client's transactions.
+
+        Returns:
+        - str: A string representing the client's transactions.
+        """
         body = 'transaction:'
         space = len(body)
         body += 'action   compeny   price   amount   val\n'
@@ -55,13 +100,24 @@ class client():
 
     
     def protfolio__str__(self):
-        # returns all symbols in protfolio
+        """
+        Get a string representation of the client's portfolio.
+
+        Returns:
+        - str: A string representing the client's portfolio.
+        """
         body = 'protfolio:' +'\n' + '---'
         for symbol in self.protfolio:
             body += f'{symbol} \n'
         return body
             
     def open_transactions__str__(self):
+        """
+        Get a string representation of the client's open transactions.
+
+        Returns:
+        - str: A string representing the client's open transactions.
+        """
         body = 'open transaction:'
         space = len(body)
         body += 'action   compeny   price   amount   val   current price   precantage\n'
@@ -70,10 +126,28 @@ class client():
         return body
 
     def deposit(self, amount):
+        """
+        Deposit cash into the client's account.
+
+        Args:
+        - amount (float): The amount of cash to deposit.
+
+        Returns:
+        - str: A string representing the deposit details.
+        """
         self.cash += amount
         return f'deposited: {amount}---cash in account: {self.cash}'
     
     def withdraw(self, amount):
+        """
+        Withdraw cash from the client's account.
+
+        Args:
+        - amount (float): The amount of cash to withdraw.
+
+        Returns:
+        - str: A string representing the withdrawal details.
+        """
         if self.cash >= amount:
             self.cash -= amount
             return f'withdraw: {amount}---cash in account: {self.cash}'
@@ -99,17 +173,32 @@ class compeny:
     
     @property
     def get_df(self, DAYS=100):
+        """
+        Get the stock data for the company.
+
+        Args:
+        - DAYS (int, optional): The number of days of data to retrieve.
+
+        Returns:
+        - DataFrame: The stock data for the company.
+        """
         df = stock_and_tecnical(self.symbol, interval=self.interval)
         return df
 
 
     @property
     def show(self):
+        """
+        Show the stock data for the company.
+        """
         plot_stock(self.get_df, self.compeny_name, show='all', interval=self.interval)
 
 
 
     def probability_of_returns(self):
+        """
+        Calculate the probability of future stock returns using the HMM model.
+        """
         # needs a function to refit the hmm model
 
         df = self.get_df
@@ -128,11 +217,28 @@ class compeny:
 
     
     def add_stock(self, compeny_name, symbol, summery):
+        """
+        Add a stock to the database.
+
+        Args:
+        - compeny_name (str): The name of the company.
+        - symbol (str): The symbol of the stock.
+        - summery (str): The summary of the stock.
+
+        Returns:
+        - str: A string representing the result of adding the stock.
+        """
         stock = compeny(self, compeny_name, symbol, summery)
         insert_stock(compeny_name, symbol)
         return f'added {compeny_name}.'
     
     def del_stock(self):
+        """
+        Remove the stock from the database.
+
+        Returns:
+        - str: A string representing the result of removing the stock.
+        """
         ans = find_s(self.symbol)
         if ans:
             r = remove_from_db(self.symbol)
