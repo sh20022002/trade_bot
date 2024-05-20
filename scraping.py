@@ -12,7 +12,7 @@ def get_stock_sum(stock):
 
 def current_stock_price(symbol):
     '''Get the current stock price for a given symbol.'''
-    pass
+    return 0
     
 
 def get_stock_data(stock, DAYS=100, interval='1d'):

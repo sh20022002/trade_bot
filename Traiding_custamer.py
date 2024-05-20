@@ -1,8 +1,10 @@
 '''all oop(object orianted programing) uses and there functions'''
-from scraping import get_stock_sum, current_stock_price, get_stock_data
-from functions import summery
+from scraping import get_stock_sum, current_stock_price
+from functions import summery ,add_all , calculate_hourly_returns
 from plots import plot_stock
 from database import find_s, remove_from_db, insert_stock
+from training import train_hmm
+from prediction import predict_next_state_and_probabilities, stock_and_tecnical
 
 class client():
     def __init__(self, name, age, profetion, cash):
@@ -82,21 +84,41 @@ class client():
 
 
 class compeny:
-    def __init__(self, compeny_name, symbol, interval='1h'):
+    def __init__(self, compeny_name, symbol):
         self.compeny_name = compeny_name
         self.symbol = symbol
-        self.summery = get_stock_sum(self.compeny_name)
+        self.interval = '1h'
+        self.summery = get_stock_sum('short\long-none\sma\50\100\200-none\pricer-none\price-prediction')
         self.price = current_stock_price(self.symbol)
         self.last_price = None
-        self.score = predict_vall()
+        self.score = None #predict_vall()
         self.sentiment = None
-        self.show = plot_stock(self.get_df, self.compeny_name, show='all', interval=interval)
-        self.interval = interval
+        self.hmm = None
+        
         
     
     @property
     def get_df(self, DAYS=100):
-        return get_stock_data(self.symbol, interval=self.interval)
+        df = stock_and_tecnical(self.symbol, interval=self.interval)
+        return df
+
+
+    @property
+    def show(self):
+        plot_stock(self.get_df, self.compeny_name, show='all', interval=self.interval)
+
+
+
+    def probability_of_returns(self):
+        # needs a function to refit the hmm model
+
+        df = self.get_df
+        df = add_all(df)
+        current_return = df['Close'][0] - df['Close'][1]
+        if(self.hmm == None):
+            self.hmm = train_hmm(self.symbol, df)
+
+        predict_next_state_and_probabilities(self.hmm, current_return)
         
 
 # for now no use for database because of the small amount data and the need for it to be updated frquantly

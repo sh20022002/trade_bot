@@ -27,9 +27,10 @@ def add_all(df):
     df = calculate_tr(df)
     df = calculate_adx(df)
     df = klass_vol(df)
-    df = volatility(df)
-    df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
-    
+    try:
+        df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
+    except KeyError:
+        df = df.drop(['avg_high_low', 'TR'], axis=1)
 
     return df
 
@@ -121,6 +122,9 @@ def klass_vol(df):
 
     return df
 
-def volatility(df):
-    df['Change'] = df['Close'] - df['Open']
-    return df
+def calculate_hourly_returns(stock_prices):
+    # stock prices - hourly close
+    returns = stock_prices.pct_change().dropna()
+    return returns.values.reshape(-1, 1)
+
+
