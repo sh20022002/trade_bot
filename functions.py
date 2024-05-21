@@ -98,32 +98,37 @@ def add_ema(df):
     df['EMA'] = df['avg_high_low'].ewm(alpha=alpha, adjust=False).mean()
     return df
 
-def calculate_rsi(df):
-    '''
-    Calculates the Relative Strength Index (RSI) for the given DataFrame.
+
+
+
+def calculate_rsi(df, window=14):
+    """
+    Calculate Relative Strength Index (RSI)
 
     Parameters:
-    df (pd.DataFrame): The DataFrame containing stock data.
+    df (pd.DataFrame): DataFrame which contain the asset prices.
+    window (int): The window period. Default window is 14.
 
     Returns:
-    pd.Series: The RSI values.
-
-    Example:
-    >>> df = pd.DataFrame({'Close': [100, 110, 105, 120, 115]})
-    >>> calculate_rsi(df)
-    0          NaN
-    1          NaN
-    2          NaN
-    3    66.666667
-    4    60.000000
-    dtype: float64
-    '''
-    window_size = 20
+    pd.Series: A pandas Series containing the RSI values.
+    """
+    # Calculate the price change
     delta = df.diff()
-    gain = (delta.where(delta > 0, 0)).rolling(window=window_size).mean()
-    loss = (-delta.where(delta < 0, 0)).rolling(window=window_size).mean()
-    rs = gain / loss
+
+    # Make two series: one of gains, the other of losses
+    gains = delta.where(delta > 0, 0)
+    losses = -delta.where(delta < 0, 0)
+
+    # Calculate the average gain and average loss
+    avg_gain = gains.rolling(window=window).mean()
+    avg_loss = losses.rolling(window=window).mean()
+
+    # Calculate RS
+    rs = avg_gain / avg_loss
+
+    # Calculate RSI
     rsi = 100 - (100 / (1 + rs))
+
     return rsi
 
 def calculate_tr(df):

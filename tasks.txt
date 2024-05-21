@@ -1,7 +1,7 @@
 1 - update database and add a function to store models using pickle
 2 - change the predict_next_state_and_probabilities so it would return instede of print
 3 - add a santiment model for predicting public santiment on stocks
-
+4 - needs to fix calculate rsi
 
 __strategies__
 1. Mean Reversion Trading:

@@ -18,7 +18,7 @@ def train_hmm(stock ,df):
     model = hmm.GaussianHMM(n_components=n_states, covariance_type="diag", n_iter=1000)
     model.fit(returns)
     name = stock + 'hmm_model.pkl'
-    path = 'pickles/' + name
+    path = r'pickles' + name
     with open(path , 'wb') as file:
         pickle.dump(model, file)
     print('Saved model')
