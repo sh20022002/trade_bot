@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from scraping import get_stock_data
 
+
 def summery(strategy):
     '''
     Returns a formatted string with strategy information.
@@ -47,10 +48,10 @@ def add_all(df):
     df['ADX'] = calculate_adx(df)
     df['KLASS_VOL'] = klass_vol(df)
     df['RSI'] = calculate_rsi(df)
-    # try:
-        # df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
-    # except KeyError:
-        # df = df.drop(['avg_high_low', 'TR'], axis=1)
+    try:
+        df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
+    except KeyError:
+        df = df.drop(['avg_high_low', 'TR'], axis=1)
     return df
 
 def add_sma(df):
@@ -234,5 +235,7 @@ def calculate_hourly_returns(stock_prices):
     return returns.values.reshape(-1, 1)
 
 
-
+df = get_stock_data('AAPL', interval='1h', DAYS=365)
+df = add_all(df)
+print(df.columns)
 

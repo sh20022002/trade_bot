@@ -1,6 +1,13 @@
-from functions import calculate_hourly_returns
+from functions import calculate_hourly_returns, add_all
 from hmmlearn import hmm
 import pickle
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error, r2_score
+import pandas as pd
+import numpy as np
+from scraping import get_stock_data
+
 
 def train_hmm(stock ,df):
     """
@@ -23,3 +30,34 @@ def train_hmm(stock ,df):
         pickle.dump(model, file)
     print('Saved model')
     return name
+
+
+def pipline(stock):
+    df = get_stock_data(stock, interval='1h', DAYS=365)
+    df = add_all(df)
+    df['Future_Close'] = df['Close'].shift(-1)
+    x = df[['Open', 'High', 'Low', 'Close', 'sma-50', 'EMA', 'ADX', 'KLASS_VOL', 'RSI']]
+    y = df['Future_Close']
+
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.15, random_state=42)
+
+    return X_train, X_test, y_train, y_test
+
+
+def train_p(X_train, X_test, y_train, y_test, model=None):
+    if(model == None):
+        model = RandomForestRegressor(random_state=42)
+
+    model.fit(X_train, y_train)
+    y_pred = model.predict(X_test)
+
+# Evaluate the model's performance
+    mse = mean_squared_error(y_test, y_pred)
+    print(f'Mean Squared Error: {mse}')
+
+    rmse = np.sqrt(mse)
+    print(f'Root Mean Squared Error: {rmse}')
+
+    r2 = r2_score(y_test, y_pred)
+    print(f'R-squared: {r2}')
+    return model
