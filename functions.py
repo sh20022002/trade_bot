@@ -1,6 +1,7 @@
 ''' all none class functions'''
 import pandas as pd 
 import numpy as np
+from scraping import get_stock_data
 
 def summery(strategy):
     '''
@@ -41,14 +42,15 @@ def add_all(df):
     2   105   125   95    120         110.0     NaN  NaN  NaN  NaN        NaN
     '''
     df = add_sma(df)
-    df = add_ema(df)
-    df = calculate_tr(df)
-    df = calculate_adx(df)
-    df = klass_vol(df)
-    try:
-        df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
-    except KeyError:
-        df = df.drop(['avg_high_low', 'TR'], axis=1)
+    df['EMA'] = add_ema(df)
+    df['TR'] = calculate_tr(df)
+    df['ADX'] = calculate_adx(df)
+    df['KLASS_VOL'] = klass_vol(df)
+    df['RSI'] = calculate_rsi(df)
+    # try:
+        # df = df.drop(['Dividends','Stock Splits', 'avg_high_low', 'TR'], axis=1)
+    # except KeyError:
+        # df = df.drop(['avg_high_low', 'TR'], axis=1)
     return df
 
 def add_sma(df):
@@ -95,40 +97,41 @@ def add_ema(df):
     '''
     window_size = 50
     alpha = 2 / (window_size + 1)
-    df['EMA'] = df['avg_high_low'].ewm(alpha=alpha, adjust=False).mean()
-    return df
+    ema = df['avg_high_low'].ewm(alpha=alpha, adjust=False).mean()
+    return ema
 
 
 
 
 def calculate_rsi(df, window=14):
     """
-    Calculate Relative Strength Index (RSI)
+    Calculate the Relative Strength Index (RSI) for a given DataFrame.
 
     Parameters:
-    df (pd.DataFrame): DataFrame which contain the asset prices.
-    window (int): The window period. Default window is 14.
+    - df (pandas.DataFrame): The DataFrame containing the 'Close' prices.
+    - window (int): The number of periods to use for calculating the RSI. Default is 14.
 
     Returns:
-    pd.Series: A pandas Series containing the RSI values.
+    - rsi (pandas.Series): The calculated RSI values.
+
     """
-    # Calculate the price change
-    delta = df.diff()
-
-    # Make two series: one of gains, the other of losses
-    gains = delta.where(delta > 0, 0)
-    losses = -delta.where(delta < 0, 0)
-
-    # Calculate the average gain and average loss
-    avg_gain = gains.rolling(window=window).mean()
-    avg_loss = losses.rolling(window=window).mean()
-
-    # Calculate RS
+    # Calculate price changes
+    delta = df['Close'].diff()
+    
+    # Calculate gains and losses
+    gain = (delta.where(delta > 0, 0)).fillna(0)
+    loss = (-delta.where(delta < 0, 0)).fillna(0)
+    
+    # Calculate the average gain and loss
+    avg_gain = gain.rolling(window=window, min_periods=1).mean()
+    avg_loss = loss.rolling(window=window, min_periods=1).mean()
+    
+    # Calculate the Relative Strength (RS)
     rs = avg_gain / avg_loss
-
-    # Calculate RSI
+    
+    # Calculate the RSI
     rsi = 100 - (100 / (1 + rs))
-
+    
     return rsi
 
 def calculate_tr(df):
@@ -152,8 +155,8 @@ def calculate_tr(df):
     tr1 = abs(df['High'] - df['Low'])
     tr2 = abs(df['High'] - df['Close'].shift())
     tr3 = abs(df['Low'] - df['Close'].shift())
-    df['TR'] = np.maximum(np.maximum(tr1, tr2), tr3)
-    return df
+    tr = np.maximum(np.maximum(tr1, tr2), tr3)
+    return tr
 
 def calculate_adx(df):
     '''
@@ -185,8 +188,8 @@ def calculate_adx(df):
     df_temp['DIplus'] = 100 * (df_temp['DMplus_smoothed'] / df_temp['ATR'])
     df_temp['DIminus'] = 100 * (df_temp['DMminus_smoothed'] / df_temp['ATR'])
     df_temp['DX'] = 100 * (np.abs(df_temp['DIplus'] - df_temp['DIminus']) / (df_temp['DIplus'] + df_temp['DIminus']))
-    df['ADX'] = df_temp['DX'].rolling(window=window_size).mean()
-    return df
+    ADX = df_temp['DX'].rolling(window=window_size).mean()
+    return ADX
 
 def klass_vol(df):
     '''
@@ -206,8 +209,8 @@ def klass_vol(df):
     1   115  100    105   110        NaN
     2   125   95    120   105        NaN
     '''
-    df['klass_vol'] = ((np.log(df['High']) - np.log(df['Low']))**2)/2 -(2*np.log(2) -1)*(np.log(df['Close'])-np.log(df['Open']))**2
-    return df
+    klass_vol = ((np.log(df['High']) - np.log(df['Low']))**2)/2 -(2*np.log(2) -1)*(np.log(df['Close'])-np.log(df['Open']))**2
+    return klass_vol
 
 def calculate_hourly_returns(stock_prices):
     '''
@@ -229,5 +232,7 @@ def calculate_hourly_returns(stock_prices):
     '''
     returns = stock_prices.pct_change().dropna()
     return returns.values.reshape(-1, 1)
+
+
 
 

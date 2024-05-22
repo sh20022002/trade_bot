@@ -59,11 +59,11 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     next_state = np.argmax(state_probs)
     next_state_probs = state_probs[0]
     states = ['negative', 'neutral', 'positive']
-    print(f"Predicted state for the next hour: {states[next_state]}")
+    # print(f"Predicted state for the next hour: {states[next_state]}")
     state = states[next_state]
     probability = next_state_probs[next_state]
-    print(f"Probability of negative return: {next_state_probs[0]:.2f}")
-    print(f"Probability of neutral return: {next_state_probs[1]:.2f}")
-    print(f"Probability of positive return: {next_state_probs[2]:.2f}")
+    # print(f"Probability of negative return: {next_state_probs[0]:.2f}")
+    # print(f"Probability of neutral return: {next_state_probs[1]:.2f}")
+    # print(f"Probability of positive return: {next_state_probs[2]:.2f}")
+    return(state, probability)
 
-# needs to return insted of printing

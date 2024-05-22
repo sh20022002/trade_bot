@@ -39,7 +39,7 @@ def plot_stock(df, stock, show='no', interval='1d'):
                 close=df['Close'],
                 name=stock))
     if(show == 'all'):
-        for column in ['Volume','sma-50', 'EMA', 'ADX']:
+        for column in ['Volume','sma-50', 'EMA', 'ADX', 'RSI']:
             fig.add_trace(go.Scatter(x=df['Datetime'], y=df[column], name=column))
     if (interval == '1h'):
         fig.update_xaxes(

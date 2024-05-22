@@ -23,4 +23,3 @@ def train_hmm(stock ,df):
         pickle.dump(model, file)
     print('Saved model')
     return name
-

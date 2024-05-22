@@ -161,6 +161,12 @@ class compeny:
     def __init__(self, compeny_name, symbol):
         self.compeny_name = compeny_name
         self.symbol = symbol
+        self.Security = None
+        self.GICS_Sector = None
+        self.GICS_Sub_Industry = None
+        self.CIK = None
+        self.Founded = None
+        self.Location = None
         self.interval = '1h'
         self.summery = get_stock_sum('short\long-none\sma\50\100\200-none\pricer-none\price-prediction')
         self.price = current_stock_price(self.symbol)

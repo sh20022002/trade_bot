@@ -5,3 +5,4 @@ datetime==5.5
 yfinance==0.2.38
 numpy==1.26.4
 hmmlearn==0.3.2
+scikit-learn==1.4.2
