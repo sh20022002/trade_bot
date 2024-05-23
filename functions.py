@@ -37,10 +37,10 @@ def add_all(df):
     Example:
     >>> df = pd.DataFrame({'Open': [100, 110, 105], 'High': [120, 115, 125], 'Low': [90, 100, 95], 'Close': [110, 105, 120]})
     >>> add_all(df)
-       Open  High  Low  Close  avg_high_low  sma-50  EMA   TR  ADX  klass_vol
-    0   100   120   90    110         105.0     NaN  NaN  NaN  NaN        NaN
-    1   110   115  100    105         107.5     NaN  NaN  NaN  NaN        NaN
-    2   105   125   95    120         110.0     NaN  NaN  NaN  NaN        NaN
+       Open  High  Low  Close  avg_high_low  sma-50  EMA   TR  ADX  klass_vol  RSI
+    0   100   120   90    110         105.0     NaN  NaN  NaN  NaN        NaN  NaN
+    1   110   115  100    105         107.5     NaN  NaN  NaN  NaN        NaN  NaN
+    2   105   125   95    120         110.0     NaN  NaN  NaN  NaN        NaN  NaN
     '''
     df = add_sma(df)
     df['EMA'] = add_ema(df)
