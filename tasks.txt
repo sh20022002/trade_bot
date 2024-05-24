@@ -1,4 +1,4 @@
-1 - update traning train to save model and refit the model from it saved place
+
 1 - update database and add a function to store models using pickle
 3 - add a santiment model for predicting public santiment on stocks
 

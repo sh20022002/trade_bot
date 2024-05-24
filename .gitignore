@@ -1,5 +1,5 @@
 env
 __pycache__
 api_keys.py
-pickels
+models
 train_sk_model.ipynb

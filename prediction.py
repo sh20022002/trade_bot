@@ -50,7 +50,7 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     - None
     '''
     current_return = np.array(current_return).reshape(-1, 1)
-    path = r'pickles' + path_to_model
+    path = r'models\\pickles' + path_to_model
     # print(os.getcwd())
     with open(path, 'rb') as file:
         model = pickle.load(file)
