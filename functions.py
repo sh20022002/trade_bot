@@ -1,3 +1,26 @@
+''' 
+This module contains various functions for analyzing stock data and calculating technical indicators.
+
+Functions:
+- summery(strategy): Returns a formatted string with strategy information.
+- add_all(df): Adds various technical indicators to the given DataFrame.
+- add_sma(df): Adds the Simple Moving Average (SMA) to the given DataFrame.
+- add_ema(df): Adds the Exponential Moving Average (EMA) to the given DataFrame.
+- calculate_rsi(df, window=14): Calculate the Relative Strength Index (RSI) for a given DataFrame.
+- calculate_tr(df): Calculates the True Range (TR) for the given DataFrame.
+- calculate_adx(df): Calculates the Average Directional Index (ADX) for the given DataFrame.
+- klass_vol(df): Calculates the Klass Volatility (klass_vol) for the given DataFrame.
+- calculate_hourly_returns(stock_prices): Calculates the hourly returns for the given stock prices.
+- chack_last_update_of_model(stock): Checks the last update of the model for a specific stock.
+
+Note: This module requires the 'pandas', 'numpy', and 'scraping' modules to be imported.
+'''
+
+import pandas as pd 
+import numpy as np
+from scraping import get_stock_data
+
+# Rest of the code...
 ''' all none class functions'''
 import pandas as pd 
 import numpy as np
@@ -235,7 +258,42 @@ def calculate_hourly_returns(stock_prices):
     return returns.values.reshape(-1, 1)
 
 
-df = get_stock_data('AAPL', interval='1h', DAYS=365)
-df = add_all(df)
-print(df.columns)
+def chack_last_update_of_model(stock):
+    """
+    Retrieves the last update datetime of the model trained with the specified stock data.
 
+    Args:
+        stock (str): The stock symbol or identifier.
+
+    Returns:
+        datetime.datetime or None: The datetime of the last update if found, None otherwise.
+    """
+    with open(r'models\\model.txt', 'r') as file:
+        lines = file.readlines()
+        for line in reversed(lines):
+            if f'trained with {stock} data' in line:
+                datetime_str = line.split(' - ')[0].strip()
+                entry_datetime = datetime.datetime.strptime(datetime_str, '%Y-%m-%d - %H:%M:%S')
+                return entry_datetime
+    return None
+
+
+
+def chack_last_update_of_hmm_model(stock):
+    """
+    Retrieves the last update datetime of the hmm model trained with the specified stock data.
+
+    Args:
+        stock (str): The stock symbol or identifier.
+
+    Returns:
+        datetime.datetime or None: The datetime of the last update if found, None otherwise.
+    """
+    with open(r'models\\hmm_model.txt', 'r') as file:
+        lines = file.readlines()
+        for line in reversed(lines):
+            if f'{stock} - model updated in' in line:
+                datetime_str = line.split(' - ')[2].strip()
+                entry_datetime = datetime.datetime.strptime(datetime_str, '%Y-%m-%d - %H:%M:%S')
+                return entry_datetime
+    return None

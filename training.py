@@ -44,7 +44,7 @@ def train_hmm_to_date(stock, last_update):
     Returns:
         None
     """
-    today = datetime.today()
+    today = datetime.now()
     difference = today - past_date
     days = difference.days
     df = get_stock_data(stock, DAYS=days, interval='1h')
@@ -57,7 +57,7 @@ def train_hmm_to_date(stock, last_update):
     with open(path ,'wb' ) as file:
         pickle.load(model)
     with open(r'models\\hmm_model.txt', 'a') as file:
-        file.write(f'{stock} - model updated in {today}')
+        file.write(f'{stock} - model updated in - {today}')
     print('model saved.')
 
 

@@ -178,7 +178,7 @@ class compeny:
         
     
     @property
-    def get_df(self, DAYS=100):
+    def get_df(self, DAYS=365):
         """
         Get the stock data for the company.
 
@@ -213,7 +213,9 @@ class compeny:
         if(self.hmm == None):
             self.hmm = train_hmm(self.symbol, df)
 
-        predict_next_state_and_probabilities(self.hmm, current_return)
+        state, probability = predict_next_state_and_probabilities(self.hmm, current_return)
+
+        prediction = None
         
 
 # for now no use for database because of the small amount data and the need for it to be updated frquantly

@@ -10,7 +10,9 @@ trading system
 
 
 
+__corolation vs co-integration___
 
+Cointegration is a technique that allows us to distinguish if two time series have a long-running relationship or if it is just spurious correlation. Rather than measuring if the series’ move together, it focuses on determining if the difference between their means stays consistent.
 
 
 

@@ -6,7 +6,7 @@ import training
 import numpy as np
 from hmmlearn import hmm
 import pickle
-import os
+
 
 def stock_and_tecnical(stock, interval='1h'):
     '''
@@ -51,7 +51,6 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     '''
     current_return = np.array(current_return).reshape(-1, 1)
     path = r'models\\pickles' + path_to_model
-    # print(os.getcwd())
     with open(path, 'rb') as file:
         model = pickle.load(file)
     print(current_return)
@@ -66,4 +65,31 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     # print(f"Probability of neutral return: {next_state_probs[1]:.2f}")
     # print(f"Probability of positive return: {next_state_probs[2]:.2f}")
     return(state, probability)
+
+
+def predict_next_close(stock, df):
+    """
+    Predicts the next closing price for a given stock using a trained model.
+
+    Args:
+        stock (str): The stock symbol or identifier.
+        df (pandas.DataFrame): The input data for prediction.
+
+    Returns:
+        float: The predicted closing price.
+
+    Raises:
+        FileNotFoundError: If the model file is not found.
+
+    """
+    X_train, X_test, y_train, y_test = training.pipline(stock)
+
+    training.train_p(X_train, X_test, y_train, y_test)
+
+    with open(r'models\\pickles\\master_model.pkl') as file:
+        model = pickle.load(file)
+    current = None
+    prediction = model.predict(df[0])
+    return prediction
+
 
