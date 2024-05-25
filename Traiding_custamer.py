@@ -4,7 +4,7 @@ from functions import summery ,add_all , calculate_hourly_returns
 from plots import plot_stock
 from database import find_s, remove_from_db, insert_stock
 from training import train_hmm
-from prediction import predict_next_state_and_probabilities, stock_and_tecnical
+from prediction import predict_next_state_and_probabilities, stock_and_tecnical, predict_next_close
 
 class client():
     """
@@ -215,8 +215,9 @@ class compeny:
 
         state, probability = predict_next_state_and_probabilities(self.hmm, current_return)
 
-        prediction = None
+        prediction = predict_next_close(self.symbol, self.get_df)
         
+        return f'next {self.interval} will {state} about {prediction} with a risk of {probability}'
 
 # for now no use for database because of the small amount data and the need for it to be updated frquantly
 # if will be used for more then one costomer will need a database and methods to update all data frequantly 

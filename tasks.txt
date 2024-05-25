@@ -1,4 +1,4 @@
-1 - function for chacking model updates and returns the last date a stock was updated
+1 - test all new function
 1 - update database and add a function to store models using pickle
 3 - add a santiment model for predicting public santiment on stocks
 
