@@ -7,7 +7,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 import numpy as np
 from scraping import get_stock_data
-from DateTime import date
+from datetime import date, datetime
 
 
 def train_hmm(stock ,df):
@@ -45,17 +45,17 @@ def train_hmm_to_date(stock, last_update):
         None
     """
     today = datetime.now()
-    difference = today - past_date
+    difference = today - last_update
     days = difference.days
     df = get_stock_data(stock, DAYS=days, interval='1h')
     returns = calculate_hourly_returns(df['Close'])
-    name = stock + 'hmm_model.pkl'
-    path = r'models\\pickles' + name
+    path = f'models\pickels\{stock}hmm_model.pkl'
     with open(path , 'rb') as file:
         model = pickle.load(file)
+    # cant load the model
     model.fit(returns)
     with open(path ,'wb' ) as file:
-        pickle.load(model)
+        pickle.dump(model)
     with open(r'models\\hmm_model.txt', 'a') as file:
         file.write(f'{stock} - model updated in - {today}')
     print('model saved.')
@@ -114,3 +114,4 @@ def train_p(X_train, X_test, y_train, y_test, stock):
     with open(r'models\\model.txt', 'a') as file:
         file.write(f'{date.today()}  -  trained with {stock} data, score - {r2}')
     print('Saved model')
+train_hmm_to_date('ASTS', datetime(2024, 5, 1))

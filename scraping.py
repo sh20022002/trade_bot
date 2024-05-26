@@ -1,6 +1,6 @@
 '''all web scraping functions'''
 
-from datetime import now, timedelta ##
+from datetime import datetime, timedelta 
 import pandas as pd
 import yfinance as yf
 
@@ -34,3 +34,8 @@ def get_stock_data(stock, DAYS=365, interval='1h'):
         df.reset_index(inplace=True)
         df.rename(columns={'Date': 'Datetime'}, inplace=True)
     return df
+
+def get_tickers():
+    tickers = pd.read_html(
+    'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
+    return tickers
