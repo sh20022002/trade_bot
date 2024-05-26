@@ -84,7 +84,7 @@ def predict_next_close(stock, df):
     """
     X_train, X_test, y_train, y_test = training.pipline(stock)
 
-    training.train_p(X_train, X_test, y_train, y_test)
+    training.train_p(X_train, X_test, y_train, y_test, stock)
 
     with open(r'models\\pickles\\master_model.pkl') as file:
         model = pickle.load(file)

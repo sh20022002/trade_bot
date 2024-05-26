@@ -49,7 +49,7 @@ def train_hmm_to_date(stock, last_update):
     days = difference.days
     df = get_stock_data(stock, DAYS=days, interval='1h')
     returns = calculate_hourly_returns(df['Close'])
-    path = f'models\pickels\{stock}hmm_model.pkl'
+    path = f'models\pickles\{stock}hmm_model.pkl'
     with open(path , 'rb') as file:
         model = pickle.load(file)
     # cant load the model
@@ -100,7 +100,7 @@ def train_p(X_train, X_test, y_train, y_test, stock):
     except FileNotFoundError:
         print('file not found! creating a new model.')
         model = RandomForestRegressor(random_state=42)
-    model.fit(X_train, y_train)
+    model.fit(X_train, y_train) #
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
     print(f'Mean Squared Error: {mse}')
@@ -114,4 +114,4 @@ def train_p(X_train, X_test, y_train, y_test, stock):
     with open(r'models\\model.txt', 'a') as file:
         file.write(f'{date.today()}  -  trained with {stock} data, score - {r2}')
     print('Saved model')
-train_hmm_to_date('ASTS', datetime(2024, 5, 1))
+# train_hmm_to_date('ASTS', datetime(2024, 5, 1))
