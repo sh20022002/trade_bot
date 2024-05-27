@@ -6,6 +6,7 @@ import training
 import numpy as np
 from hmmlearn import hmm
 import pickle
+import pandas as pd
 
 
 def stock_and_tecnical(stock, interval='1h'):
@@ -36,7 +37,7 @@ def rsi(stock):
     '''
     df = scraping.get_stock_data(stock)
     si = calculate_rsi(df)
-    print(si)
+    return si
 
 def predict_next_state_and_probabilities(path_to_model, current_return):
     '''
@@ -53,7 +54,7 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     path = os.path.join('models\pickles', path_to_model)
     with open(path, 'rb') as file:
         model = pickle.load(file)
-    print(current_return)
+    
     state_probs = model.predict_proba(current_return)
     next_state = np.argmax(state_probs)
     next_state_probs = state_probs[0]
@@ -91,8 +92,10 @@ def predict_next_close(stock, df):
     current = None
     last_row = df.iloc[-1]
     last_row = last_row.drop('Datetime')
-    # print( last_row)
-    prediction = model.predict(last_row) ########## this is the problem
+    
+    df = pd.DataFrame(last_row).T
+    
+    prediction = model.predict(df) ########## this is the problem
     return prediction
 
 

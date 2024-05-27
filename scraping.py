@@ -1,9 +1,8 @@
 '''all web scraping functions'''
-
-from datetime import datetime, timedelta 
+from datetime import timedelta 
 import pandas as pd
 import yfinance as yf
-
+import pytz, datetime
 def get_stock_sum(stock):
     '''Get the latest news related to stocks.'''
     pass
@@ -24,7 +23,8 @@ def get_stock_data(stock, DAYS=365, interval='1h'):
     Returns:
     - DataFrame: A pandas DataFrame containing the historical stock data.
     '''
-    end_date = datetime.now() ##
+    end_date = get_exchange_time()##
+    
     start_date = end_date - timedelta(DAYS)  # days before the end date
     stock_ticker = yf.Ticker(stock)
     df = stock_ticker.history(start=start_date, end=end_date, interval=interval)
@@ -39,3 +39,15 @@ def get_tickers():
     tickers = pd.read_html(
     'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
     return tickers
+
+def get_exchange_time():
+    # Define the timezone for New York
+    ny_timezone = pytz.timezone('America/New_York')
+
+    # Get the current time in New York
+    ny_time = datetime.datetime.now(ny_timezone)
+
+    # Format the time similar to yfinance format
+    # formatted_ny_time = ny_time.strftime('%Y-%m-%d %H:%M:%S')
+
+    return (ny_time)

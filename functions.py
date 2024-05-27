@@ -20,11 +20,6 @@ import pandas as pd
 import numpy as np
 from scraping import get_stock_data
 
-# Rest of the code...
-''' all none class functions'''
-import pandas as pd 
-import numpy as np
-from scraping import get_stock_data
 
 
 def summery(strategy):
@@ -273,7 +268,7 @@ def chack_last_update_of_model(stock):
         for line in reversed(lines):
             if f'trained with {stock} data' in line:
                 datetime_str = line.split(' - ')[0].strip()
-                entry_datetime = datetime.datetime.strptime(datetime_str, '%Y-%m-%d - %H:%M:%S')
+                entry_datetime = get_exchange_time()
                 return entry_datetime
     return None
 
@@ -294,6 +289,8 @@ def chack_last_update_of_hmm_model(stock):
         for line in reversed(lines):
             if f'{stock} - model updated in' in line:
                 datetime_str = line.split(' - ')[2].strip()
-                entry_datetime = datetime.datetime.strptime(datetime_str, '%Y-%m-%d - %H:%M:%S')
+                entry_datetime = get_exchange_time()
                 return entry_datetime
     return None
+
+

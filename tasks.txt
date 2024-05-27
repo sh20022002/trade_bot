@@ -1,5 +1,5 @@
-1 - test all new function
-2 - fix the update of hmm load pickle dosnt work 
+
+1 - add the update model to date to predicting 
 1 - update database and add a function to store models using pickle
 3 - add a santiment model for predicting public santiment on stocks
 
