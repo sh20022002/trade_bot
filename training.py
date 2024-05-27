@@ -1,9 +1,11 @@
 from functions import calculate_hourly_returns, add_all
 from hmmlearn import hmm
-import pickle
+import pickle, os
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
+# from sklearn.impute import SimpleImputer
+# impute the data instead of droping all rows with NaN values
 import pandas as pd
 import numpy as np
 from scraping import get_stock_data
@@ -26,9 +28,11 @@ def train_hmm(stock ,df):
     model = hmm.GaussianHMM(n_components=n_states, covariance_type="diag", n_iter=1000)
     model.fit(returns)
     name = stock + 'hmm_model.pkl'
-    path = r'models\\pickles' + name
+    path = os.path.join('models\pickles', name)
     with open(path , 'wb') as file:
         pickle.dump(model, file)
+    with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
+        file.write(f'{stock} - model updated in - {today}\n')
     print('model saved.')
     return name
 
@@ -56,8 +60,8 @@ def train_hmm_to_date(stock, last_update):
     model.fit(returns)
     with open(path ,'wb' ) as file:
         pickle.dump(model)
-    with open(r'models\\hmm_model.txt', 'a') as file:
-        file.write(f'{stock} - model updated in - {today}')
+    with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
+        file.write(f'{stock} - model updated in - {today}\n')
     print('model saved.')
 
 
@@ -74,6 +78,11 @@ def pipline(stock):
     df = get_stock_data(stock, interval='1h', DAYS=365)
     df = add_all(df)
     df['Future_Close'] = df['Close'].shift(-1)
+    # impute the data instead of droping all rows with NaN values
+    # df = df[['Open', 'High', 'Low', 'Close', 'sma-50', 'EMA', 'ADX', 'KLASS_VOL', 'RSI', 'Future_Close']]
+    # imputer = SimpleImputer(strategy='mean')
+    # df = imputer.fit_transform(df)
+    df = df.dropna()
     x = df[['Open', 'High', 'Low', 'Close', 'sma-50', 'EMA', 'ADX', 'KLASS_VOL', 'RSI']]
     y = df['Future_Close']
     X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.15, random_state=42)
@@ -94,13 +103,32 @@ def train_p(X_train, X_test, y_train, y_test, stock):
     Returns:
         None
     """
-    try:
-        with open(r'models\\pickles\\master_model.pkl', 'wb') as file:
-            model = pickle.load(file)
-    except FileNotFoundError:
-        print('file not found! creating a new model.')
+    model = None # a deffolt value
+    model_path = 'models\pickles\master_model.pkl'
+    if os.path.exists(model_path) and os.path.getsize(model_path) > 0:
+        try:
+            # Load existing model
+            with open(model_path, 'rb') as file:
+                model = pickle.load(file)
+            print('Model loaded successfully.')
+        except EOFError:
+            print('Error loading model. File might be corrupted. Creating a new model.')
+    else:
+        print('Model not found or is empty! Creating a new model.')
+
+    # If model loading failed or didn't exist, create a new one
+    if model is None:
         model = RandomForestRegressor(random_state=42)
-    model.fit(X_train, y_train) #
+
+    # Train (or refit) the model
+    model.fit(X_train, y_train)
+    print('Model training complete.')
+
+    # Save the updated model
+    with open(model_path, 'wb') as file:
+        pickle.dump(model, file)
+    print('Model saved successfully.')
+
     y_pred = model.predict(X_test)
     mse = mean_squared_error(y_test, y_pred)
     print(f'Mean Squared Error: {mse}')
@@ -109,9 +137,9 @@ def train_p(X_train, X_test, y_train, y_test, stock):
     r2 = r2_score(y_test, y_pred)
     print(f'R-squared: {r2}')
     file = 'master_model.pkl'
-    with open(path , 'wb') as file:
+    with open(model_path , 'wb') as file:
         pickle.dump(model, file)
     with open(r'models\\model.txt', 'a') as file:
-        file.write(f'{date.today()}  -  trained with {stock} data, score - {r2}')
+        file.write(f'{date.today()}  -  trained with {stock} data, score - {r2}\n')
     print('Saved model')
 # train_hmm_to_date('ASTS', datetime(2024, 5, 1))

@@ -1,5 +1,5 @@
 '''uses the model to predict stock vulnerability'''
-
+import os
 import scraping
 from functions import add_all, calculate_rsi
 import training
@@ -50,7 +50,7 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     - None
     '''
     current_return = np.array(current_return).reshape(-1, 1)
-    path = r'models\\pickles' + path_to_model
+    path = os.path.join('models\pickles', path_to_model)
     with open(path, 'rb') as file:
         model = pickle.load(file)
     print(current_return)
@@ -86,10 +86,13 @@ def predict_next_close(stock, df):
 
     training.train_p(X_train, X_test, y_train, y_test, stock)
 
-    with open(r'models\\pickles\\master_model.pkl') as file:
+    with open(os.path.join('models\pickles', 'master_model.pkl'), 'rb') as file:
         model = pickle.load(file)
     current = None
-    prediction = model.predict(df[0])
+    last_row = df.iloc[-1]
+    last_row = last_row.drop('Datetime')
+    # print( last_row)
+    prediction = model.predict(last_row) ########## this is the problem
     return prediction
 
 
