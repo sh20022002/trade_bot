@@ -1,5 +1,6 @@
 
 1 - add the update model to date to predicting 
+2 - find if there is a problem with the probability of the markov model
 1 - update database and add a function to store models using pickle
 3 - add a santiment model for predicting public santiment on stocks
 
