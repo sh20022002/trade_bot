@@ -1,7 +1,7 @@
 '''uses the model to predict stock vulnerability'''
 import os
 import scraping
-from functions import add_all, calculate_rsi
+from functions import add_all, calculate_rsi, chack_last_update_of_hmm_model
 import training
 import numpy as np
 from hmmlearn import hmm
@@ -49,7 +49,13 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
 
     Returns:
     - None
+
     '''
+    last_updat = chack_last_update_of_hmm_model()
+    today = scraping.get_exchange_time()
+    time = today - last_updat
+    if time.days > 1:
+        training.train_hmm_to_date()
     current_return = np.array(current_return).reshape(-1, 1)
     path = os.path.join('models\pickles', path_to_model)
     with open(path, 'rb') as file:
