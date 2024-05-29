@@ -213,7 +213,7 @@ class compeny:
         if(self.hmm == None):
             self.hmm = train_hmm(self.symbol, df)
 
-        state, probability = predict_next_state_and_probabilities(self.hmm, current_return)
+        state, probability = predict_next_state_and_probabilities(self.hmm, current_return, self.symbol)
 
         prediction = predict_next_close(self.symbol, self.get_df)
         

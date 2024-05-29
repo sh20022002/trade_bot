@@ -18,7 +18,7 @@ Note: This module requires the 'pandas', 'numpy', and 'scraping' modules to be i
 
 import pandas as pd 
 import numpy as np
-from scraping import get_stock_data
+from scraping import get_stock_data, get_exchange_time
 
 
 

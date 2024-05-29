@@ -39,7 +39,7 @@ def rsi(stock):
     si = calculate_rsi(df)
     return si
 
-def predict_next_state_and_probabilities(path_to_model, current_return):
+def predict_next_state_and_probabilities(path_to_model, current_return, stock):
     '''
     Predicts the next state and probabilities of a stock return using a trained model.
 
@@ -51,7 +51,7 @@ def predict_next_state_and_probabilities(path_to_model, current_return):
     - None
 
     '''
-    last_updat = chack_last_update_of_hmm_model()
+    last_updat = chack_last_update_of_hmm_model(stock)
     today = scraping.get_exchange_time()
     time = today - last_updat
     if time.days > 1:
