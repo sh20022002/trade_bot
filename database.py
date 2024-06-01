@@ -38,5 +38,17 @@ def remove_from_db(symbol):
 def get_hmm_model(symbol, interval):
     pass
 
+def save_compeny(company):
+    pass
+
+def get_compeny(symbol):
+    pass
+
+def update_model(symbol, date):
+    pass
+
 def get_master_model(symbol, interval):
+    pass
+
+def update_master_model():
     pass
