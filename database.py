@@ -34,3 +34,9 @@ def find_stock(symbol):
 def remove_from_db(symbol):
     '''Removes a stock from the database based on its symbol.'''
     mycol.delete_one({'symbol': symbol})
+
+def get_hmm_model(symbol, interval):
+    pass
+
+def get_master_model(symbol, interval):
+    pass

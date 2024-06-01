@@ -2,7 +2,7 @@
 from scraping import get_stock_sum, current_stock_price
 from functions import summery ,add_all , calculate_hourly_returns
 from plots import plot_stock
-from database import find_s, remove_from_db, insert_stock
+import database
 from training import train_hmm
 from prediction import predict_next_state_and_probabilities, stock_and_tecnical, predict_next_close
 
@@ -167,18 +167,17 @@ class compeny:
         self.CIK = None
         self.Founded = None
         self.Location = None
-        self.interval = '1h'
         self.summery = get_stock_sum('short\long-none\sma\50\100\200-none\pricer-none\price-prediction')
         self.price = current_stock_price(self.symbol)
         self.last_price = None
         self.score = None #predict_vall()
         self.sentiment = None
-        self.hmm = None
+        self.hmm = False
         
         
     
-    @property
-    def get_df(self, DAYS=365):
+    
+    def get_df(self, DAYS=365, interval='1h'):
         """
         Get the stock data for the company.
 
@@ -188,42 +187,43 @@ class compeny:
         Returns:
         - DataFrame: The stock data for the company.
         """
-        df = stock_and_tecnical(self.symbol, interval=self.interval)
+        df = stock_and_tecnical(self.symbol, interval=interval)
         return df
 
 
     @property
-    def show(self):
+    def show(self, interval):
         """
         Show the stock data for the company.
         """
-        plot_stock(self.get_df, self.compeny_name, show='all', interval=self.interval)
+        plot_stock(self.get_df(interval=interval), self.compeny_name, show='all', interval=interval)
 
 
 
-    def probability_of_returns(self):
+    def probability_of_returns(self, interval):
         """
         Calculate the probability of future stock returns using the HMM model.
         """
         # needs a function to refit the hmm model
 
-        df = self.get_df
+        df = self.get_df(interval=interval)
         df = add_all(df)
         current_return = df['Close'][0] - df['Close'][1]
-        if(self.hmm == None):
-            self.hmm = train_hmm(self.symbol, df)
-
+        if(self.hmm == False):
+            model = train_hmm(self.symbol, df)
+        else:
+            model = database.get_hmm_model(interval=interval)
         state, probability = predict_next_state_and_probabilities(self.hmm, current_return, self.symbol)
 
-        prediction = predict_next_close(self.symbol, self.get_df)
+        prediction = predict_next_close(self.symbol, self.get_df(interval=interval))
         
-        return f'next {self.interval} will {state} about {prediction} with a risk of {probability}'
+        return f'next {interval} will {state} about {prediction} with a risk of {probability}'
 
 # for now no use for database because of the small amount data and the need for it to be updated frquantly
 # if will be used for more then one costomer will need a database and methods to update all data frequantly 
 # and there will be an advange for bigger usege doo to the better accessing times and aficcentce to run and grow
 # --needs an updated aprouch for scallability
-
+    
     
     def add_stock(self, compeny_name, symbol, summery):
         """
@@ -238,7 +238,7 @@ class compeny:
         - str: A string representing the result of adding the stock.
         """
         stock = compeny(self, compeny_name, symbol, summery)
-        insert_stock(compeny_name, symbol)
+        database.insert_stock(compeny_name, symbol)
         return f'added {compeny_name}.'
     
     def del_stock(self):
@@ -248,9 +248,9 @@ class compeny:
         Returns:
         - str: A string representing the result of removing the stock.
         """
-        ans = find_s(self.symbol)
+        ans = database.find_s(self.symbol)
         if ans:
-            r = remove_from_db(self.symbol)
+            r = database.remove_from_db(self.symbol)
             if r:
                 return f'{self.compeny_name} removed from database!'
         else:

@@ -12,7 +12,7 @@ from scraping import get_stock_data, get_exchange_time
 
 
 
-def train_hmm(stock ,df):
+def train_hmm(stock ,df, interval):
     """
     Trains a Hidden Markov Model (HMM) using Gaussian emission distribution on the given stock data.
 
@@ -27,17 +27,17 @@ def train_hmm(stock ,df):
     n_states = 3
     model = hmm.GaussianHMM(n_components=n_states, covariance_type="diag", n_iter=1000)
     model.fit(returns)
-    name = stock + 'hmm_model.pkl'
+    name = stock + f'hmm_{interval}_model.pkl'
     path = os.path.join('models\pickles', name)
     with open(path , 'wb') as file:
         pickle.dump(model, file)
     with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
-        file.write(f'{stock} - model updated in - {get_exchange_time()}\n')
+        file.write(f'{stock} - {interval} - model updated in - {get_exchange_time()}\n')
     print('model saved.')
     return name
 
 
-def train_hmm_to_date(stock, last_update):
+def train_hmm_to_date(stock, last_update, interval):
     """
     Trains a Hidden Markov Model (HMM) using Gaussian emission distribution on the given stock data up to a specific date.
 
@@ -51,9 +51,9 @@ def train_hmm_to_date(stock, last_update):
     today = get_exchange_time()
     difference = today - last_update
     days = difference.days
-    df = get_stock_data(stock, DAYS=days, interval='1h')
+    df = get_stock_data(stock, DAYS=days, interval=interval)
     returns = calculate_hourly_returns(df['Close'])
-    path = f'models\pickles\{stock}hmm_model.pkl'
+    path = f'models\pickles\{stock}-{interval}hmm_model.pkl'
     with open(path , 'rb') as file:
         model = pickle.load(file)
     
@@ -62,11 +62,11 @@ def train_hmm_to_date(stock, last_update):
         pickle.dump(model)
 
     with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
-        file.write(f'{stock} - model updated in - {today}\n')
+        file.write(f'{stock} - {interval} - model updated in - {today}\n')
     print('model saved.')
 
 
-def pipline(stock):
+def pipline(stock, interval):
     """
     Creates a data pipeline for training a regression model on stock data.
 
@@ -76,7 +76,7 @@ def pipline(stock):
     Returns:
         tuple: A tuple containing the training and testing data.
     """
-    df = get_stock_data(stock, interval='1h', DAYS=365)
+    df = get_stock_data(stock, interval=interval, DAYS=365)
     df = add_all(df)
     df['Future_Close'] = df['Close'].shift(-1)
     # impute the data instead of droping all rows with NaN values
@@ -90,7 +90,7 @@ def pipline(stock):
     return X_train, X_test, y_train, y_test
 
 
-def train_p(X_train, X_test, y_train, y_test, stock):
+def train_p(X_train, X_test, y_train, y_test, stock, interval):
     """
     Trains a regression model using the given training data and evaluates its performance on the testing data.
 
@@ -105,7 +105,7 @@ def train_p(X_train, X_test, y_train, y_test, stock):
         None
     """
     model = None # a deffolt value
-    model_path = 'models\pickles\master_model.pkl'
+    model_path = f'models\pickles\master_{interval}_model.pkl'
     if os.path.exists(model_path) and os.path.getsize(model_path) > 0:
         try:
             # Load existing model
@@ -140,6 +140,6 @@ def train_p(X_train, X_test, y_train, y_test, stock):
     # print(f'R-squared: {r2}')
     
     with open(r'models\\model.txt', 'a') as file:
-        file.write(f'{get_exchange_time()}  -  trained with {stock} data, score - {r2}\n')
-    print('Saved master model')
+        file.write(f'{get_exchange_time()}  -  trained with {stock} data in {interval}, score - {r2}\n')
+    print(f'Saved master {interval} model')
 # train_hmm_to_date('ASTS', datetime(2024, 5, 1))

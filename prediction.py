@@ -39,7 +39,7 @@ def rsi(stock):
     si = calculate_rsi(df)
     return si
 
-def predict_next_state_and_probabilities(path_to_model, current_return, stock):
+def predict_next_state_and_probabilities(path_to_model, current_return, stock, interval):
     '''
     Predicts the next state and probabilities of a stock return using a trained model.
 

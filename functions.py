@@ -274,7 +274,7 @@ def chack_last_update_of_model(stock):
 
 
 
-def chack_last_update_of_hmm_model(stock):
+def chack_last_update_of_hmm_model(stock, interval):
     """
     Retrieves the last update datetime of the hmm model trained with the specified stock data.
 
@@ -284,10 +284,11 @@ def chack_last_update_of_hmm_model(stock):
     Returns:
         datetime.datetime or None: The datetime of the last update if found, None otherwise.
     """
+    
     with open(r'models\\hmm_model.txt', 'r') as file:
         lines = file.readlines()
         for line in reversed(lines):
-            if f'{stock} - model updated in' in line:
+            if f'{stock} - {interval} - model updated in' in line:
                 datetime_str = line.split(' - ')[2].strip()
                 entry_datetime = get_exchange_time()
                 return entry_datetime
