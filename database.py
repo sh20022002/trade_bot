@@ -9,6 +9,7 @@ mydb = mycliant['stocks-consumer']
 
 mycol = mydb['stocks']
 mycol2 = mydb['cliant']
+models = mydb['models']
 
 def insert_stock(name, symbol):
     '''Inserts a single stock into the database.'''
@@ -36,13 +37,23 @@ def remove_from_db(symbol):
     mycol.delete_one({'symbol': symbol})
 
 def get_hmm_model(symbol, interval):
-    pass
+    models.find_one({'symbol': symbol, 'interval': interval})
 
 def save_compeny(company):
-    pass
+    mycol2.insert_one({'name': company.name,
+                         'symbol': company.symbol,
+                          'summary': company.summary,
+                           'data': company.data,
+                            'model': company.model,
+                             'hmm': company.hmm,
+                              'last_update': company.last_update,
+                               'interval': company.interval,
+                                'master_model': company.master_model,
+                                 'master_model_interval': company.master_model_interval,
+                                  'master_model_last_update': company.master_model_last_update})
 
 def get_compeny(symbol):
-    pass
+    mycol2.find_one({'symbol': symbol})
 
 def update_model(symbol, date):
     pass
