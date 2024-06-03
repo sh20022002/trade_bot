@@ -23,16 +23,23 @@ def train_hmm(stock ,df, interval):
     Returns:
         str: The name of the saved HMM model file.
     """
+    file_system = True
+
     returns = calculate_hourly_returns(df['Close'])
     n_states = 3
     model = hmm.GaussianHMM(n_components=n_states, covariance_type="diag", n_iter=1000)
     model.fit(returns)
-    name = stock + f'hmm_{interval}_model.pkl'
-    path = os.path.join('models\pickles', name)
-    with open(path , 'wb') as file:
-        pickle.dump(model, file)
-    with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
-        file.write(f'{stock} - {interval} - model updated in - {get_exchange_time()}\n')
+    if(file_system):
+        name = stock + f'hmm_{interval}_model.pkl'
+        path = os.path.join('models\pickles', name)
+        with open(path , 'wb') as file:
+            pickle.dump(model, file)
+        with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
+            file.write(f'{stock} - {interval} - model updated in - {get_exchange_time()}\n')
+
+    else:
+        pickled_model = pickle.dump(model)
+        database.update_hmm(stock, interval, pickled_model)
     print('model saved.')
     return name
 
@@ -48,21 +55,35 @@ def train_hmm_to_date(stock, last_update, interval):
     Returns:
         None
     """
+    file_system = True # if uses file system true if mongodb false
+
     today = get_exchange_time()
     difference = today - last_update
     days = difference.days
     df = get_stock_data(stock, DAYS=days, interval=interval)
     returns = calculate_hourly_returns(df['Close'])
-    path = f'models\pickles\{stock}-{interval}hmm_model.pkl'
-    with open(path , 'rb') as file:
-        model = pickle.load(file)
-    
-    model.fit(returns)
-    with open(path ,'wb' ) as file:
-        pickle.dump(model)
+    if(file_system):
+        path = f'models\pickles\{stock}-{interval}hmm_model.pkl'
+        with open(path , 'rb') as file:
+            model = pickle.load(file)
+    else:
+        model = database.get_hmm(stock, interval) 
 
-    with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
-        file.write(f'{stock} - {interval} - model updated in - {today}\n')
+
+    model.fit(returns)
+
+    if(file_system):
+        with open(path ,'wb' ) as file:
+            pickle.dump(model)
+
+        with open(os.path.join('models', 'hmm_model.txt'), 'a') as file:
+            file.write(f'{stock} - {interval} - model updated in - {today}\n')
+
+    else:
+        
+        pickled_model = pickle.dump(model)
+        database.update_hmm(stock, interval, pickled_model)
+   
     print('model saved.')
 
 
@@ -104,19 +125,30 @@ def train_p(X_train, X_test, y_train, y_test, stock, interval):
     Returns:
         None
     """
-    model = None # a deffolt value
-    model_path = f'models\pickles\master_{interval}_model.pkl'
-    if os.path.exists(model_path) and os.path.getsize(model_path) > 0:
-        try:
-            # Load existing model
-            with open(model_path, 'rb') as file:
-                model = pickle.load(file)
-            # print('master Model loaded successfully.')
-        except EOFError:
-            print('Error loading model. File might be corrupted. Creating a new model.')
-    else:
-        print('Model not found or is empty! Creating a new model.')
+    file_system = True
 
+    model = None
+
+    if file_system:
+        model_path = f'models\pickles\master_{interval}_model.pkl'
+        if os.path.exists(model_path) and os.path.getsize(model_path) > 0:
+            try:
+                # Load existing model
+                with open(model_path, 'rb') as file:
+                    model = pickle.load(file)
+                # print('master Model loaded successfully.')
+            except EOFError:
+                print('Error loading model. File might be corrupted. Creating a new model.')
+        else:
+            print('Model not found or is empty! Creating a new model.')
+
+    else:
+        try:
+            model = database.get_master_model(stock, interval)
+            # If model loading failed or didn't exist, create a new one
+        except EOFError: # or any other error
+                model = None
+    
     # If model loading failed or didn't exist, create a new one
     if model is None:
         model = RandomForestRegressor(random_state=42)
@@ -124,12 +156,14 @@ def train_p(X_train, X_test, y_train, y_test, stock, interval):
     # Train (or refit) the model
     model.fit(X_train, y_train)
     # print('Model training complete.')
-
-    # Save the updated model
-    with open(model_path, 'wb') as file:
-        pickle.dump(model, file)
+    if file_system:
+     # Save the updated model
+        with open(model_path, 'wb') as file:
+            pickle.dump(model, file)
     # print('master Model saved successfully.')
-
+    else:
+        pickled_model = pickle.dump(model)
+        database.update_master_model(stock, interval, pickled_model)
     y_pred = model.predict(X_test)
     
     mse = mean_squared_error(y_test, y_pred)
@@ -138,8 +172,8 @@ def train_p(X_train, X_test, y_train, y_test, stock, interval):
     # print(f'Root Mean Squared Error: {rmse}')
     r2 = r2_score(y_test, y_pred)
     # print(f'R-squared: {r2}')
-    
-    with open(r'models\\model.txt', 'a') as file:
-        file.write(f'{get_exchange_time()}  -  trained with {stock} data in {interval}, score - {r2}\n')
+    if file_system:
+        with open(r'models\\model.txt', 'a') as file:
+            file.write(f'{get_exchange_time()}  -  trained with {stock} data in {interval}, score - {r2}\n')
     print(f'Saved master {interval} model')
 # train_hmm_to_date('ASTS', datetime(2024, 5, 1))

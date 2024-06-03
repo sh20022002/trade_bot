@@ -1,7 +1,10 @@
 '''all database actions'''
 import pymongo
+import pickle
 
 local_host = '' '''url path'''
+
+port = 27017
 
 mycliant = pymongo.MongoClient(local_host)
 
@@ -43,23 +46,22 @@ def save_compeny(company):
     mycol2.insert_one({'name': company.name,
                          'symbol': company.symbol,
                           'summary': company.summary,
-                           'data': company.data,
-                            'model': company.model,
-                             'hmm': company.hmm,
+                            'model_hour': company.hourly,
+                            'model_daily':company.daily,
+
                               'last_update': company.last_update,
                                'interval': company.interval,
-                                'master_model': company.master_model,
                                  'master_model_interval': company.master_model_interval,
                                   'master_model_last_update': company.master_model_last_update})
 
 def get_compeny(symbol):
     mycol2.find_one({'symbol': symbol})
 
-def update_model(symbol, date):
+def update_model(symbol, interval, pickled_model):
     pass
 
 def get_master_model(symbol, interval):
     pass
 
-def update_master_model():
+def update_master_model(symbol, interval, pickled_model):
     pass

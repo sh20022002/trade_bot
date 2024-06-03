@@ -172,7 +172,8 @@ class compeny:
         self.last_price = None
         self.score = None #predict_vall()
         self.sentiment = None
-        self.hmm = False
+        
+        
         
         
     
