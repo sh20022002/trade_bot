@@ -1,67 +1,96 @@
 '''all database actions'''
+
 import pymongo
+
 import pickle
 
-local_host = '' '''url path'''
+from api_keys import port, local_host
 
-port = 27017
 
-mycliant = pymongo.MongoClient(local_host)
+
+
+
+mycliant = pymongo.MongoClient(local_host + port)
+
 
 mydb = mycliant['stocks-consumer']
 
-mycol = mydb['stocks']
+compenies = mydb['stocks']
+
 mycol2 = mydb['cliant']
+
 models = mydb['models']
 
-def insert_stock(name, symbol):
-    '''Inserts a single stock into the database.'''
-    x = '{name' + f':{name},' + 'symbol' + f':{symbol}' + '}'
-    data = mycol.insert_one(x)
 
-def insert_stocks(names, symbols):
-    '''Inserts multiple stocks into the database.'''
-    data = []
-    for name, symbol in zip(names, symbols):
-        x = '{name' + f':{name},' + 'symbol' + f':{symbol}' + '}'
-        data.insert(x)
-    data = mycol.insert_many(x)
-
-def find_s(symbol):
-    '''Finds a stock in the database based on its symbol.'''
-    mycol.find_one(symbol)
-
-def find_stock(symbol):
-    '''Returns all stock data and initializes it in a company object.'''
-    pass
 
 def remove_from_db(symbol):
+
     '''Removes a stock from the database based on its symbol.'''
-    mycol.delete_one({'symbol': symbol})
+    compenies.delete_one({'symbol': symbol})
+
 
 def get_hmm_model(symbol, interval):
-    models.find_one({'symbol': symbol, 'interval': interval})
+    compeny = compenies.find_one({'symbol': symbol})
+    return compeny[f'model_{interval}']
+
 
 def save_compeny(company):
-    mycol2.insert_one({'name': company.name,
-                         'symbol': company.symbol,
-                          'summary': company.summary,
-                            'model_hour': company.hourly,
-                            'model_daily':company.daily,
 
-                              'last_update': company.last_update,
-                               'interval': company.interval,
-                                 'master_model_interval': company.master_model_interval,
-                                  'master_model_last_update': company.master_model_last_update})
+    compenies.insert_one({'name': company.name,
+
+                         'symbol': company.symbol,
+
+                         'Security': company.Security,
+
+                         'Gics_Sector': company.Gics_Sector,
+
+                         'Gics_Sub_Industry': company.Gics_Sub_Industry,
+
+                         'CIK': company.CIK,
+
+                        'Founded': company.Founded,
+
+                        'Location': company.Location,
+
+                        'price': company.price,
+
+                        'score': company.score,
+
+                        'sentiment': company.sentiment,
+
+                        'summary': company.summary,
+
+                        'model_1h': company.hourly,
+
+                        'model_1d':company.daily,
+                        
+                        'last_update': company.last_update})
+
+return True
+
 
 def get_compeny(symbol):
-    mycol2.find_one({'symbol': symbol})
+
+    compeny = mycol2.find_one({'symbol': symbol})
+    return compeny
+
 
 def update_model(symbol, interval, pickled_model):
-    pass
 
-def get_master_model(symbol, interval):
-    pass
+    mycol2.update_one({'symbol': symbol, 'interval': interval}, {'$set': {'model': pickled_model}})
 
-def update_master_model(symbol, interval, pickled_model):
-    pass
+    return True
+
+
+def get_master_model(interval):
+
+    model = models.find_one({'interval': interval}) ## needs to be tested
+
+    return model['model']
+
+
+def update_master_model(interval, pickled_model):
+
+    models.update_one({'interval': interval}, {'$set': {'model': pickled_model}})
+
+    return True
