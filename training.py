@@ -9,6 +9,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import pandas as pd
 import numpy as np
 from scraping import get_stock_data, get_exchange_time
+import api_keys.file_system
 
 
 
@@ -23,7 +24,7 @@ def train_hmm(stock ,df, interval):
     Returns:
         str: The name of the saved HMM model file.
     """
-    file_system = True
+    file_system = api_keys.file_system # if uses file system true if mongodb false
 
     returns = calculate_hourly_returns(df['Close'])
     n_states = 3
@@ -55,7 +56,7 @@ def train_hmm_to_date(stock, last_update, interval):
     Returns:
         None
     """
-    file_system = True # if uses file system true if mongodb false
+    file_system = api_keys.file_system # if uses file system true if mongodb false
 
     today = get_exchange_time()
     difference = today - last_update
@@ -125,7 +126,7 @@ def train_p(X_train, X_test, y_train, y_test, stock, interval):
     Returns:
         None
     """
-    file_system = True
+    file_system = api_keys.file_system # if uses file system true if mongodb false
 
     model = None
 
