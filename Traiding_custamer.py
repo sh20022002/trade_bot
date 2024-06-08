@@ -161,7 +161,6 @@ class compeny:
     def __init__(self, compeny_name, symbol):
         self.compeny_name = compeny_name
         self.symbol = symbol
-        self.Security = None
         self.GICS_Sector = None
         self.GICS_Sub_Industry = None
         self.CIK = None

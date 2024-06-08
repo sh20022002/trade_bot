@@ -40,8 +40,6 @@ def save_compeny(company):
 
                          'symbol': company.symbol,
 
-                         'Security': company.Security,
-
                          'Gics_Sector': company.Gics_Sector,
 
                          'Gics_Sub_Industry': company.Gics_Sub_Industry,
@@ -60,9 +58,9 @@ def save_compeny(company):
 
                         'summary': company.summary,
 
-                        'model_1h': company.hourly,
+                        'model_1h': company.hourly, #
 
-                        'model_1d':company.daily,
+                        'model_1d':company.daily, #
                         
                         'last_update': company.last_update})
 
