@@ -193,11 +193,11 @@ class compeny:
 
 
     @property
-    def show(self, interval):
+    def show(self, interval, columns):
         """
         Show the stock data for the company.
         """
-        plot_stock(self.get_df(interval=interval), self.compeny_name, show='all', interval=interval)
+        plot_stock(self.get_df(interval=interval), self.compeny_name, columns, show='all', interval=interval)
 
 
 

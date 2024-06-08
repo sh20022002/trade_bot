@@ -2,7 +2,7 @@ import plotly.graph_objects as go
 from datetime import datetime, timedelta
 import pandas as pd
 
-def plot_stock(df, stock, show='no', interval='1d'):
+def plot_stock(df, stock, columns, show='no', interval='1d'):
     """
     Plots the stock data using Plotly.
 
@@ -39,7 +39,7 @@ def plot_stock(df, stock, show='no', interval='1d'):
                 close=df['Close'],
                 name=stock))
     if(show == 'all'):
-        for column in ['Volume','sma-50', 'EMA', 'ADX', 'RSI']:
+        for column in columns:
             fig.add_trace(go.Scatter(x=df['Datetime'], y=df[column], name=column))
     if (interval == '1h'):
         fig.update_xaxes(
@@ -50,4 +50,4 @@ def plot_stock(df, stock, show='no', interval='1d'):
                                     dict(bounds=[16, 9.5], pattern="hour")]) # hide hours outside of 9.30am-4pm
                                 
     
-    fig.show()
+    return fig

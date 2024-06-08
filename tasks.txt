@@ -1,4 +1,6 @@
 test all new code and database
+change all from objects to database
+change to client server based arcitature
 1 - complete main with both interval
 1 - add the update model to date to predicting 
 2 - find if there is a problem with the probability of the markov model

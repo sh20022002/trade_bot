@@ -37,7 +37,7 @@ def get_stock_data(stock, DAYS=365, interval='1h'):
 
 def get_tickers():
     tickers = pd.read_html(
-    'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')[0]
+    'https://en.wikipedia.org/wiki/List_of_S%26P_500_companies')
     return tickers
 
 def get_exchange_time():
@@ -51,3 +51,4 @@ def get_exchange_time():
     # formatted_ny_time = ny_time.strftime('%Y-%m-%d %H:%M:%S')
 
     return (ny_time)
+print(get_tickers())
