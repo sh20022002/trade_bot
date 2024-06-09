@@ -9,16 +9,17 @@ import yfinance as yf
 import pandas as pd
 
 
-compenies = []
+
 def initialize():
     # initialize the database
     sp500_compenies = scraping.get_tickers()
     # Index(['Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry',
         #    'Headquarters Location', 'Date added', 'CIK', 'Founded']
-
+    compenies = []
     sp500 = []
-    for i in range(len(sp500_compenies[0])):
-        compenies.append(sp500_compenies[2][i])
+    for i in range(2):
+        # print(sp500_compenies.index)
+        compenies.append(sp500_compenies[1][i])
         compeny = Traiding_custamer.compeny(sp500_compenies[2][i], sp500_compenies[1][i])
         compeny.GICS_Sector = sp500_compenies[3][i]
         compeny.GICS_Sub_Industry = sp500_compenies[4][i]
@@ -26,12 +27,10 @@ def initialize():
         compeny.CIK = sp500_compenies[6][i]
         compeny.Founded = sp500_compenies[7][i]
 
-        # Save the compeny to the database
-        database.save_compeny(compeny)
-        hourly_returns = compeny.probability_of_returns('1h')
-        daily_returns = compeny.probability_of_returns('1d')
+        sp500.append(compeny)
+    return sp500, compenies
 
-
+stocks, compenies= initialize()
 
 # Set the title of the app
 st.title("Trading Platform")
@@ -48,7 +47,22 @@ else:
 
 # block
 st.write(f"Stock: {stock_ticker}")
-# st.plotly_chart(stock.show(interval, inicaitors))
+
+for compeny in stocks:
+    if compeny.symbol == stock_ticker:
+        st.write(f"Name: {compeny.compeny_name}")
+        st.plotly_chart(compeny.show(interval, inicaitors))
+        st.write(f"Location: {compeny.Location}")
+        st.write(f"Founded: {compeny.Founded}")
+        st.write(f"CIK: {compeny.CIK}")
+        st.write(f"GICS Sector: {compeny.GICS_Sector}")
+        st.write(f"GICS Sub-Industry: {compeny.GICS_Sub_Industry}")
+        st.write(f"Price: {compeny.price}")
+        st.write(f"Score: {compeny.score}")
+        st.write(f"Sentiment: {compeny.sentiment}")
+        st.write(f"Summary: {compeny.summary}")
+        
+        
 
 # exit button
 exit_app = st.button("Shut Down")

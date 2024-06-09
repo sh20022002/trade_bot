@@ -10,7 +10,7 @@ from api_keys import port, local_host
 
 
 
-mycliant = pymongo.MongoClient(local_host + port)
+mycliant = pymongo.MongoClient(local_host)
 
 
 mydb = mycliant['stocks-consumer']
@@ -64,7 +64,7 @@ def save_compeny(company):
                         
                         'last_update': company.last_update})
 
-return True
+    return True
 
 
 def get_compeny(symbol):
