@@ -9,4 +9,8 @@ use uniforme investments to all clients and change volume by account sum
 1 - finish update database and add a function to store models using pickle
 3 - add a santiment model for predicting public santiment on stocks
 
+front
 
+- create client and server
+- create a regarsration approvel proccess
+- create a account streage system
