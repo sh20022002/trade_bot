@@ -4,8 +4,6 @@ import pickle, os
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
-# from sklearn.impute import SimpleImputer
-# impute the data instead of droping all rows with NaN values
 import pandas as pd
 import numpy as np
 from scraping import get_stock_data, get_exchange_time

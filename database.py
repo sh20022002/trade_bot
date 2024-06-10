@@ -17,11 +17,14 @@ mydb = mycliant['stocks-consumer']
 
 compenies = mydb['stocks']
 
-mycol2 = mydb['cliant']
+users = mydb['cliants']
 
 models = mydb['models']
 
+#users functions
 
+def add_user(user):
+    pass
 
 def remove_from_db(symbol):
 

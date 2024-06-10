@@ -3,6 +3,8 @@ from datetime import timedelta
 import pandas as pd
 import yfinance as yf
 import pytz, datetime
+
+
 def get_stock_sum(stock):
     '''Get the latest news related to stocks.'''
     pass
