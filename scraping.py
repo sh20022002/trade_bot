@@ -3,6 +3,8 @@ from datetime import timedelta
 import pandas as pd
 import yfinance as yf
 import pytz, datetime
+import requests
+from api_keys import exchange_api_key
 
 
 def get_stock_sum(stock):
@@ -53,4 +55,19 @@ def get_exchange_time():
     # formatted_ny_time = ny_time.strftime('%Y-%m-%d %H:%M:%S')
 
     return (ny_time)
-# print(get_tickers()[1])
+
+def get_exchange_rate(from_currency, to_currency):
+    
+    url = f'https://v6.exchangerate-api.com/v6/{api_keys.exchange_api_key}/latest/{from_currency}'
+    
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        exchange_rate = data['conversion_rates'][to_currency]
+        return exchange_rate
+    else:
+        return EOFError
+
+
+rate = get_exchange_rate(from_currency, to_currency)
+return rate

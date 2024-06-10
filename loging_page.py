@@ -2,11 +2,13 @@ import streamlit as st
 import bcrypt
 
 def landing_page():
-    st.title("Trading Platform")
+    st.title("SmartTraid")
+    st.title("The Future of Trading.")
     
 
 def loging_page():
-    st.title("Trading Platform")
+    st.title("SmartTraid")
+    st.title("The Future of Trading.")
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
 
@@ -20,11 +22,11 @@ def loging_page():
         else:
             st.error("Invalid username or password")
 
-def generate_hash(password):
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
 def register_page():
-    st.title("Trading Platform")
+    st.title("SmartTraid")
+    st.title("The Future of Trading.")
+    st.subheader("Sign Up")
     username = st.text_input("Username")
     password = st.text_input("Password", type='password')
     confirm_password = st.text_input("Confirm Password", type='password')

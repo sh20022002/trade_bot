@@ -1,5 +1,8 @@
 '''all oop(object orianted programing) uses and there functions'''
+from functions import generate_hash
+from scraping import exchange_rate
 
+# add database functions to the client class
 
 class client():
 
@@ -28,9 +31,11 @@ class client():
 
     """
 
-    def __init__(self, first_name, last_name, ID, date_of_birth, profetion, cash, bank_account_number, bank, email, phone_number, address, city, country, postal_code):
+    def __init__(self, first_name, last_name, password, ID, date_of_birth, profetion, cash, bank_account_number, bank, email, phone_number, address, city, country, postal_code):
 
         self.name = first_name + last_name
+        self.username = self.name + str(ID)
+        self.hash = generate_hash(password)
         self.ID = ID
         self.date_of_birth = date_of_birth
         self.profetion = profetion
@@ -49,102 +54,7 @@ class client():
         self.stock_value = 0
 
     
-    
 
-    def stock(self, symbol, amount, action, strategy, target_price=None):
-
-        """
-
-        Perform a stock transaction for the client.
-
-
-        Args:
-
-        - symbol (str): The symbol of the stock.
-
-        - amount (int): The amount of stock to buy or sell.
-
-        - action (str): The action to perform, either 'buy' or 'sale'.
-
-        - strategy (str): The trading strategy to use.
-
-        - target_price (float, optional): The target price for the transaction.
-
-
-        Returns:
-
-        - str: A string representing the transaction details.
-
-        """
-
-        if action == 'sale':
-
-            buy = transaction(symbol, amount, strategy, buy=False, target_price=None)
-        else:
-
-            buy = transaction(symbol, amount, strategy, buy, target_price=None)
-
-        self.transactions.append(buy)
-
-        resolve, tamount, tbuy = self.open_resolve(buy)
-
-        if resolve:
-
-            buy = transaction(symbol, tamount, strategy, tbuy, target_price=None)
-
-            self.open_positions.append(buy)
-        
-
-        self.protfolio.append(buy.symbol)
-
-        if action =='sale':
-
-            self.cash -= buy.sum_val
-
-            self.stock_value += buy.amount * buy.price_in_sale
-        else:
-
-            self.cash += buy.sum_val
-
-            # change price in sale to current price
-
-            self.stock_value += buy.amount * buy.price_in_sale
-
-        strategy_sum = summery(strategy)
-
-        if target_price != None:
-
-            # adds the target price if there is
-
-            return f'{action}: {buy.symbol}---price: {buy.price_in_sale}---{strategy_sum}---target: {target_price}'
-        else:
-
-            return f'{action}: {buy.symbol}---price: {buy.price_in_sale}---{strategy_sum}'
-
-
-    def transactions__str__(self):
-
-        """
-
-        Get a string representation of the client's transactions.
-
-
-        Returns:
-
-        - str: A string representing the client's transactions.
-
-        """
-
-        body = 'transaction:'
-
-        space = len(body)
-
-        body += 'action   compeny   price   amount   val\n'
-        for tran in self.transaction:
-
-            body += ' '*space + f'{tran.action}---{tran.symbol}---{tran.price}---{tran.amount}   {tran.sum_val} \n'
-
-        return body
 
     
 
@@ -169,32 +79,9 @@ class client():
         return body
             
 
-    def open_transactions__str__(self):
+    
 
-        """
-
-        Get a string representation of the client's open transactions.
-
-
-        Returns:
-
-        - str: A string representing the client's open transactions.
-
-        """
-
-        body = 'open transaction:'
-
-        space = len(body)
-
-        body += 'action   compeny   price   amount   val   current price   precantage\n'
-        for tran in self.transaction:
-
-            body += ' '*space + f'{tran.action}---{tran.symbol}---{tran.price}---{tran.amount}---{tran.sum_val}---{current_stock_price(tran.symbol)} \n'
-
-        return body
-
-
-    def deposit(self, amount):
+    def deposit(self, amount, currency='USD'):
 
         """
 
@@ -211,7 +98,9 @@ class client():
         - str: A string representing the deposit details.
 
         """
-
+        if currency != 'USD':
+            exchange_rate = get_exchange_rate(currency, 'USD')
+            amount = amount * exchange_rate
         self.cash += amount
 
         return f'deposited: {amount}---cash in account: {self.cash}'
@@ -238,8 +127,11 @@ class client():
         if self.cash >= amount:
 
             self.cash -= amount
+            if currency != 'USD':
+                exchange_rate = get_exchange_rate(currency, 'USD')
+                amount = amount * exchange_rate
 
-            return f'withdraw: {amount}---cash in account: {self.cash}'
+            return f'withdraw: {amount}---cash in account: {self.cash} in {currency}'
         else:
 
             return 'not sefichant cash in account!'

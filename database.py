@@ -103,23 +103,49 @@ def update_master_model(interval, pickled_model):
 def add_client(client):
 
     users.insert_one({'name': client.name,
+                     'username': client.username,
+                     'hash': client.hash, ## needs to be added
+                     'ID': client.ID,
+                     
+                     'date_of_birth': client.date_of_birth,
 
                       'age': client.age,
 
                       'profetion': client.profetion,
 
-                      'cash': client.cash,
+                      'bank_account_number': client.bank_account_number,
 
-                      'protfolio': client.protfolio,
+                      'bank': client.bank,
 
-                      'stock_value': client.stock_value,
+                      'email': client.email,
+
+                      'phone_number': client.phone_number,
+
+                      'address': client.address,
+
+                      'city': client.city,
+
+                      'country': client.country,
+
+                      'postal_code': client.postal_code,
 
                       'transactions': client.transactions,
 
-                      'open_positions': client.open_positions})
+                      'open_positions': client.open_positions,
+
+                      'protfolio': client.protfolio, 
+
+                      'cash': client.cash,
+
+                      'stock_value': client.stock_value})
+
+                      
+
+                      
 
     return True
 
 def get_client(name):
 
     client = users.find_one({' name': name})
+    return client
