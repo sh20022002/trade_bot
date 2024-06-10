@@ -21,6 +21,8 @@ users = mydb['cliants']
 
 models = mydb['models']
 
+transactions = mydb['transactions']
+
 #users functions
 
 def add_user(user):
@@ -95,3 +97,29 @@ def update_master_model(interval, pickled_model):
     models.update_one({'interval': interval}, {'$set': {'model': pickled_model}})
 
     return True
+
+#client functions
+
+def add_client(client):
+
+    users.insert_one({'name': client.name,
+
+                      'age': client.age,
+
+                      'profetion': client.profetion,
+
+                      'cash': client.cash,
+
+                      'protfolio': client.protfolio,
+
+                      'stock_value': client.stock_value,
+
+                      'transactions': client.transactions,
+
+                      'open_positions': client.open_positions})
+
+    return True
+
+def get_client(name):
+
+    client = users.find_one({' name': name})
