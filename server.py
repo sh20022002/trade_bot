@@ -15,16 +15,6 @@ class client():
     - stock_value (float): The total value of stocks owned by the client.
     """
 
-    def __init__(self, name, age, profession, cash):
-        self.name = name
-        self.age = age
-        self.profession = profession
-        self.cash = cash
-        self.transactions = []
-        self.open_transactions = []
-        self.portfolio = []
-        self.stock_value = 0
-
     # Rest of the code...
 class client():
     def __init__(self, name, age, profetion, cash):
@@ -147,10 +137,4 @@ class client():
             return f'withdraw: {amount}---cash in account: {self.cash}'
         else:
             return 'not sefichant cash in account!'
-    
-
-
-
-
-  
     
