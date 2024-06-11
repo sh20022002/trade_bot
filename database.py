@@ -6,6 +6,8 @@ import pickle
 
 from api_keys import port, local_host
 
+from functions import generate_hash
+
 
 
 
@@ -149,3 +151,13 @@ def get_client(name):
 
     client = users.find_one({' name': name})
     return client
+
+
+
+# login functions
+def login(username, password):
+    user = users.find_one({'username:': username})
+    if user['hash'] == generate_hash(password):
+        return user
+    else:
+        return None
