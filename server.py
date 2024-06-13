@@ -168,3 +168,112 @@ def initialize():
         database.save_compeny(compeny)
 
     return compenies
+
+
+    def chack_transaction(self, transaction):
+
+        """
+
+        Check if the client has enough cash to make a transaction.
+
+
+        Args:
+
+        - transaction (transaction): The transaction to check.
+
+
+        Returns:
+
+        - bool: True if the client has enough cash, False otherwise.
+
+        """
+
+        if transaction.total_price <= self.cash:
+
+            return True
+
+        else:
+
+            return False
+
+    
+    def chack_open_positions(self, transaction):
+
+        """
+
+        Check if the client has an open position for the transaction's symbol.
+
+
+        Args:
+
+        - transaction (transaction): The transaction to check.
+
+
+        Returns:
+
+        - bool: True if the client has an open position, False otherwise.
+
+        """
+
+        for position in self.open_positions:
+            #chack all open positions for the transaction symbol
+
+            if position.symbol == transaction.symbol:
+                #if the symbol is the same
+                if transaction.action == 'buy' & chack_transaction(transaction):
+                    #if the transaction is a buy and the client has enough cash
+
+                    open_positions.append(transaction)
+                    #add the transaction to the open positions
+                    if position.action == 'sale':
+                        #if the open position is a sale
+
+                        if position.amount >= transaction.amount:
+                            #if the open position amount is greater than the transaction amount
+
+                            position.amount -= transaction.amount
+                            #subtract the transaction amount from the open position amount
+                            if position.amount == 0:
+                                #if the open position amount is zero
+
+                                open_positions.remove(transaction)
+                                #remove the open position
+                            if position.amount < 0:
+                                #if the open position amount is negative
+
+                                open_positions.remove(transaction)
+                                #remove the open position
+                                transaction.amount = abs(position.amount)
+                                #set the transaction amount to the absolute value of the open position amount
+                                open_positions.append(transaction)
+                                #add the transaction to the open positions
+                    return True
+
+                if transaction.action == 'sale':
+                    #if the transaction is a sale
+                    if position.amount >= transaction.amount:
+                        #if the open position amount is greater than the transaction amount
+
+                        position.amount -= transaction.amount
+                        #subtract the transaction amount from the open position amount
+                        if position.amount == 0:
+                            #if the open position amount is zero
+                            open_positions.remove(transaction)
+                        if position.amount < 0:
+                            #if the open position amount is negative
+                            open_positions.remove(transaction)
+                            transaction.amount = abs(position.amount)
+                            open_positions.append(transaction)
+                            #add the transaction to the open positions
+                    return True   
+
+                position.amount += transaction.amount
+                #add the transaction amount to the open position amount
+            else:
+                #if the symbol is not the same
+                if chack_transaction(transaction):
+                    #if the client has enough cash
+                    open_positions.append(transaction)
+                    #add the transaction to the open positions
+                    return True
+        return False
