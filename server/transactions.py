@@ -1,5 +1,5 @@
 from scraping import get_exchange_time, current_stock_price
-
+import strategy as st
 class transaction:
     """
     Represents a transaction in the trading system.
@@ -20,6 +20,7 @@ class transaction:
         self.amount = 0
         self.total_price = value * amount
         self.date = get_exchange_time()
+        self.strategy = st.optimaize(self.action, self.symbol, self.value, self.amount, self.total_price, self.date)
 
     def __str__(self):
         return f'{self.action}: {self.symbol}---price: {self.value}---{self.amount}---{self.total_price}---{self.date}'
@@ -31,6 +32,7 @@ class transaction:
         self.value = current_stock_price(self.symbol)
         self.total_price = self.value * amount
         self.date = get_exchange_time()
+        
 
     def sale(self, symbol, amount):
         self.action = 'sale'

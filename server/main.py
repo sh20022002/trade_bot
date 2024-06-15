@@ -4,15 +4,22 @@ import time
 def main():
     # initialize the database
     initialize()
-    
+    hour = 60 * 60
+
+    while scrapping.is_nyse_open():
+        chack_open_positions()
+        look_for_trades()
+        
+        time.sleep(hour)
+
 
 def look_for_trades():
     pass
 
 def chack_open_positions():
-    pass
+    
 
-def 
+
 def initialize():
     # initialize the database
     sp500_compenies = scraping.get_tickers()
