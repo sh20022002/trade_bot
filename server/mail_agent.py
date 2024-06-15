@@ -1,7 +1,7 @@
 import smtplib, os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-sender_email, sender_password
+
 
 def send_email(recipient_email, subject, body):
     """
