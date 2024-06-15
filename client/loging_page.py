@@ -18,7 +18,7 @@ def loging_page():
 
 
     if st.button("Login"):
-        if database.login(username, password): #returns true if login is successful
+        if database.login(username, password): #change to call to server
             st.success("Logged in")
             st.switch_page('client.py') #???
         else:
