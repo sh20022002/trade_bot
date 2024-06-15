@@ -2,8 +2,8 @@
 Designing a trading bot as a microservices-based system involves several components, including a database, server, and client architecture. Here is a step-by-step guide:
 
 Architecture Overview
-Database: Stores historical and real-time market data, user information, and trading logs.
-Server: Manages data processing, decision making, and communication between clients and the database.
+Database: Stores client information, CompenyData, transaction data, models.
+Server: Manages data processing, model traning, decision making, and communication between clients and the database.
 Clients: Interfaces for users to interact with the trading bot, typically web or mobile apps.
 Steps to Design the Trading Bot
 1. Database
@@ -12,17 +12,18 @@ Schema Design:
 Users: UserID, UserName, PasswordHash, Balance, user margin, protfolio composition etc.
 
 MarketData: Ticker, Timestamp, Open, High, Low, Close, Volume, etc.
+Additional Data: added in functions - all indecaitors like - sma-50, ema, rsi etc. 
 CompenyData: 'Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry', 'Headquarters Location', 'Date added', 'CIK', 'Founded'
 CompenyModels: reggresion model for hour and day predction, Markov chain model for hour and day for risk manegment.
 Trades: TradeID, UserID, Ticker, Quantity, Price, Timestamp, etc.
 StrategyParams: StrategyID, UserID, Parameters, etc.
 2. Server
-Backend Framework: Use Flask or Django for Python, or Node.js for JavaScript.
+Backend Framework: Use socket.
 Microservices:
-Data Service: Collects and stores market data.
+Data Service: Collects and stores market data (scrapping.py).
 Trading Engine: Implements trading strategies and decision-making algorithms.
-User Service: Manages user authentication and account details.
-Notification Service: Sends alerts and notifications to users.
+User Service: Manages user authentication and account details(server.py).
+Notification Service: Sends alerts and notifications to users(mail_agnt.py or dashborad pushes).
 Communication: smtp mail agent for appdaiting users.
 3. Clients
 Web App: python streamlit
