@@ -1,7 +1,7 @@
-import smtplib
+import smtplib, os
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from api_keys import sender_email, sender_password
+sender_email, sender_password
 
 def send_email(recipient_email, subject, body):
     """
@@ -16,7 +16,7 @@ def send_email(recipient_email, subject, body):
     try:
         # Create the email
         msg = MIMEMultipart()
-        msg['From'] = sender_email
+        msg['From'] = os.getenv('SENDER_EMAIL')
         msg['To'] = recipient_email
         msg['Subject'] = subject
 
@@ -28,7 +28,7 @@ def send_email(recipient_email, subject, body):
         server.starttls()  # Enable security
 
         # Login with the sender's email and password
-        server.login(sender_email, sender_password)
+        server.login(os.getenv('SENDER_EMAIL'), os.getenv('SENDER_PASSWORD'))
 
         # Send the email
         server.sendmail(sender_email, recipient_email, msg.as_string())
