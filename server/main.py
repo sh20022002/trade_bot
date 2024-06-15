@@ -16,10 +16,22 @@ def main():
 def look_for_trades():
     pass
 
-def chack_open_positions():
-    
+def chack_open_positions(user):
+    for position in user.open_positions:
+        #chack all open positions for the transaction symbol
+        avg_price = position.value
+        current_price = scrapping.current_stock_price(position.symbol)
+        prcet_change = (current_price - avg_price) / avg_price
+        current_total_price = current_price * position.amount
+        time_in_position = scrapping.get_exchange_time() - position.date
+        if current_price <= position.strategy.stoploss or current_price >= position.strategy.stopprofit:
+            user.close_position(position)
+        else:
+            if (current_total_price / user.stock_value)>= user.strategy.top_precent_from_protfolio:
+                minimizeby = (current_total_price / user.stock_value) - user.strategy.top_precent_from_protfolio
+                user.minimize(position, minimizeby)
 
-
+        
 def initialize():
     # initialize the database
     sp500_compenies = scraping.get_tickers()
