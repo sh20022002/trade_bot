@@ -1,9 +1,10 @@
 '''all web scraping functions'''
-from datetime import timedelta 
+from datetime import timedelta, datetime, time
 import pandas as pd
 import yfinance as yf
-import pytz, datetime, os
+import pytz, os
 import requests
+
 exchange_api_key = os.getenv('EXCHANGE_API_KEY')
 
 
@@ -13,7 +14,8 @@ def get_stock_sum(stock):
 
 def current_stock_price(symbol):
     '''Get the current stock price for a given symbol.'''
-    return 0
+    df = yf.Ticker(symbol).history(period='1h')
+    return df['Close'].iloc[-1]
 
 def get_stock_data(stock, DAYS=365, interval='1h'):
     '''
@@ -49,7 +51,7 @@ def get_exchange_time():
     ny_timezone = pytz.timezone('America/New_York')
 
     # Get the current time in New York
-    ny_time = datetime.datetime.now(ny_timezone)
+    ny_time = datetime.now(ny_timezone)
 
     # Format the time similar to yfinance format
     # formatted_ny_time = ny_time.strftime('%Y-%m-%d %H:%M:%S')
@@ -69,5 +71,86 @@ def get_exchange_rate(from_currency, to_currency):
         return EOFError
 
 
-rate = get_exchange_rate(from_currency, to_currency)
-return rate
+
+   
+
+def is_nyse_open():
+    # Helper functions
+    def next_weekday(d, weekday):
+        """Return the next date with the given weekday (0=Monday, 6=Sunday)."""
+        days_ahead = weekday - d.weekday()
+        if days_ahead <= 0:  # Target day already happened this week
+            days_ahead += 7
+        return d + timedelta(days_ahead)
+
+    def easter_monday(year):
+        """Returns Easter Monday for a given year."""
+        a = year % 19
+        b = year // 100
+        c = year % 100
+        d = b // 4
+        e = b % 4
+        f = (b + 8) // 25
+        g = (b - f + 1) // 3
+        h = (19 * a + b - d - g + 15) % 30
+        i = c // 4
+        k = c % 4
+        l = (32 + 2 * e + 2 * i - h - k) % 7
+        m = (a + 11 * h + 22 * l) // 451
+        month = (h + l - 7 * m + 114) // 31
+        day = ((h + l - 7 * m + 114) % 31) + 1
+        easter_sunday = datetime(year, month, day)
+        return easter_sunday + timedelta(days=1)
+# Define the NYSE opening and closing times
+    current_time = get_exchange_time()
+    nyse_open_time = time(9, 30)
+    nyse_close_time = time(16, 0)
+    
+     # List of NYSE holidays (add more if necessary)
+    nyse_holidays = [
+        # New Year's Day
+        datetime(current_time.year, 1, 1),
+        # Martin Luther King Jr. Day (3rd Monday in January)
+        next_weekday(datetime(current_time.year, 1, 15), 0),
+        # Presidents' Day (3rd Monday in February)
+        next_weekday(datetime(current_time.year, 2, 15), 0),
+        # Good Friday (date varies)
+        easter_monday(current_time.year) - timedelta(days=3),
+        # Memorial Day (last Monday in May)
+        next_weekday(datetime(current_time.year, 5, 25), 0),
+        #   Independence Day
+        datetime(current_time.year, 7, 4),
+        # Labor Day (1st Monday in September)
+        next_weekday(datetime(current_time.year, 9, 1), 0),
+        # Thanksgiving Day (4th Thursday in November)
+        next_weekday(datetime(current_time.year, 11, 22), 3),
+        # Christmas Day
+        datetime(current_time.year, 12, 25)
+    ]
+
+        # Additional dates you mentioned
+    special_dates = [
+        datetime(current_time.year, 12, 24),
+        datetime(current_time.year, 12, 25),
+        datetime(current_time.year, 2, 19)
+    ]
+    
+    # Combine both lists
+    all_holidays = nyse_holidays + special_dates
+
+    # Check if the current date is a weekend
+    if current_time.weekday() >= 5:
+        return False
+
+    # Check if the current date is a holiday
+    if any(holiday.date() == current_time.date() for holiday in all_holidays):
+        return False
+    
+    # Check if the current time is within trading hours
+    if nyse_open_time <= current_time.time() <= nyse_close_time:
+        return True
+    else:
+        return False
+
+    
+print(is_nyse_open())

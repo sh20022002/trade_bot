@@ -18,3 +18,6 @@ class strategy:
         self.hmm_horly_state = None
         self.hmm_horly_probability = None
         self.top_precent_from_protfolio = None
+
+    def optimaize(self):
+        pass
