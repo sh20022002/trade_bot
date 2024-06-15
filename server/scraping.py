@@ -2,9 +2,9 @@
 from datetime import timedelta 
 import pandas as pd
 import yfinance as yf
-import pytz, datetime
+import pytz, datetime, os
 import requests
-from api_keys import exchange_api_key
+exchange_api_key = os.getenv('EXCHANGE_API_KEY')
 
 
 def get_stock_sum(stock):
