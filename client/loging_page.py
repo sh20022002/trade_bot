@@ -1,6 +1,7 @@
 import streamlit as st
 import bcrypt
 import keyboard, os, psutil
+import register_page, app, client
 
 def landing_page():
     st.title("SmartTraid")
@@ -14,38 +15,39 @@ def loging_page():
     password = st.text_input("Password", type='password')
 
     if st.button("register"):
-        st.switch_page('register_page.py')
+        register_page.register_page()
 
 
     if st.button("Login"):
         response = client.send_request('login', {'username': username, 'password': password})
         if response['status'] == 'success':
-            st.write("Logged in")
-            st.switch_page('client.py') #???
+            app.client_page(response['messege'], response['compenies'])
         else:
             st.error("Invalid username or password")
 
+    # exit button
 
+    exit_app = st.button("Shut Down")
 
-
-# exit button
-
-exit_app = st.button("Shut Down")
-
-if exit_app:
+    if exit_app:
 
     # Give a bit of delay for user experience
 
-    time.sleep(5)
+        time.sleep(5)
 
-    # Close streamlit browser tab
+        # Close streamlit browser tab
 
-    keyboard.press_and_release('ctrl+w')
+        keyboard.press_and_release('ctrl+w')
 
-    # Terminate streamlit python process
+        # Terminate streamlit python process
 
-    pid = os.getpid()
+        pid = os.getpid()
 
-    p = psutil.Process(pid)
-    p.terminate()
+        p = psutil.Process(pid)
+        p.terminate()
+
+
+
+
+
  

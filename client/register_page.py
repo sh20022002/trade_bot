@@ -24,15 +24,23 @@ confirm_password = st.text_input("Confirm Password", type='password')
 # create a post request to the server
 # send the user data to the server
 
-server_response = None # wait for response from server
+
 
 if st.button("Register"):
     # add the user to the database
     # wait for response
-    if password == confirm_password and server_response == 'success':
-        st.success("Registered")
-    else:
+    if password != confirm_password:
         st.error("Passwords do not match")
+    else:
+        response = client.send_request('register', {'first_name': first_name, 'last_name': last_name, 'ID': ID, 'date_of_birth': date_of_birth, 'profetion': profetion, 'bank_account_number': bank_account_number, 'bank': bank, 'email': email, 'phone_number': phone_number, 'address': address, 'city': city, 'country': country, 'postal_code': postal_code, 'password': password})
+        if response['status'] == 'success':
+            st.success("Registered")
+            loging_page.loging_page()  
+    
+        
+        
+    else:
+        
 
 # exit button
 

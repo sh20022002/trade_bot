@@ -36,7 +36,7 @@ def handle_client(client_socket, client_id):
 
 def login(data):
     # Implement your login logic here
-    return {'status': 'success', 'message': 'Logged in'}
+    return {'status': 'success', 'message': 'Logged in',  'compenies': 'compenies'}
 
 def register(data):
     # Implement your register logic here
