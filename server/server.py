@@ -67,8 +67,11 @@ def register(data):
     Returns:
         dict: The register response.
     """
-    # Implement your register logic here
-    return {'status': 'success', 'message': 'Registered'}
+    if database.add_client(data):
+        return {'status': 'success', 'message': 'Registered'}
+
+    return {'status': 'error', 'message': 'Registration failed'}
+
 
 def fetch_company_data(data):
     """
@@ -80,8 +83,9 @@ def fetch_company_data(data):
     Returns:
         dict: The company data response.
     """
-    # Implement your fetch company data logic here
-    return {'status': 'success', 'data': 'Company data'}
+    data = database.get_compenies()
+
+    return {'status': 'success', 'data': data}
 
 def buy(data):
     """

@@ -269,8 +269,8 @@ class client():
         if amount_to_sell > 0:
             if position.action == 'buy':
                 if authorize(amount_to_sell * current_stock_price(position.symbol)):
-                    self.sale(position.symbol, amount_to_sell)
+                    transaction.sale(position.symbol, amount_to_sell)
             else:
                 if authorize(amount_to_sell * current_stock_price(position.symbol)):
-                    self.buy(position.symbol, amount_to_sell)
+                    transaction.buy(position.symbol, amount_to_sell)
         

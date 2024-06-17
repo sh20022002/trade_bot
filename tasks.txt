@@ -3,16 +3,14 @@ add olgin with password and username
 update all client and server and chack funcinability
 update all docker files and compose
 create server key and crt
-1 - complete main with both interval
-1 - add the update model to date to predicting 
 2 - find if there is a problem with the probability of the markov model
 1 - finish update database and add a function to store models using pickle
-
+1 - add buy and sell to database or/and find a way to update data at data base
+oop/ db oriented
 
 front
 
-- create client and server
-- create a regarsration approvel proccess
-- create a account streage system
+- test client and server
+- create a account streagy system
 - add protfolio to client sidebar with quick veiw to Analyze the protfolio stocks
 dident add to all functions sma 20 and 100
