@@ -1,6 +1,7 @@
 import socket
 import pickle
 import threading, os
+import database, main
 
 clients = {}
 
@@ -132,4 +133,5 @@ def server():
 
 if __name__ == "__main__":
     server()
+    main.main()
 

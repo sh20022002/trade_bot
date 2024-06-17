@@ -7,7 +7,7 @@ import pickle
 from functions import generate_hash
 
 local_host = os.getenv('DB_HOST')
-port = os.getenv('PORT')
+port = os.getenv('DB_PORT')
 
 mycliant = pymongo.MongoClient(local_host)
 mydb = mycliant['stocks-consumer']
