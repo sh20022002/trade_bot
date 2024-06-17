@@ -53,6 +53,11 @@ def get_compeny(symbol):
     compeny = mycol2.find_one({'symbol': symbol})
     return compeny
 
+def get_compenies():
+    '''Returns all companies in the database.'''
+    compenies = mycol2.find()
+    return compenies
+
 def update_model(symbol, interval, pickled_model):
     '''Updates the model for a given stock symbol and interval.'''
     mycol2.update_one({'symbol': symbol, 'interval': interval}, {'$set': {'model': pickled_model}})

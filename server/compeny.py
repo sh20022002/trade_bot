@@ -70,7 +70,7 @@ class compeny:
 
         prediction = predict_next_close(self.symbol, self.get_df(interval=interval))
         
-        return f'next {interval} will {state} about {prediction} with a risk of {probability}'
+        return interval, state, prediction, probability
 
 # for now no use for database because of the small amount data and the need for it to be updated frquantly
 # if will be used for more then one costomer will need a database and methods to update all data frequantly 

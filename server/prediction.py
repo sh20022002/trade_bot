@@ -101,7 +101,7 @@ def predict_next_close(stock, df):
     
     df = pd.DataFrame(last_row).T
     
-    prediction = model.predict(df) ########## this is the problem
+    prediction = model.predict(df) 
     return prediction
 
 

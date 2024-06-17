@@ -16,6 +16,7 @@ class transaction:
     def __init__(self):
         self.action = None
         self.symbol = None
+        self.compeny = database.get_compeny(self.symbol)
         self.value = current_stock_price(self.symbol)
         self.amount = 0
         self.total_price = value * amount
