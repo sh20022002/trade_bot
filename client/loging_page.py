@@ -18,8 +18,9 @@ def loging_page():
 
 
     if st.button("Login"):
-        if database.login(username, password): #change to call to server
-            st.success("Logged in")
+        response = client.send_request('login', {'username': username, 'password': password})
+        if response['status'] == 'success':
+            st.write("Logged in")
             st.switch_page('client.py') #???
         else:
             st.error("Invalid username or password")

@@ -12,7 +12,7 @@ import socket
 import ssl
 import pickle
 
-def create_client_socket( port=65432):
+def create_client_socket( port=9999):
     host = os.gethostname()
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     return client_socket
@@ -44,6 +44,26 @@ def start_client():
 if __name__ == "__main__":
     start_client()
 
+
+def send_request(command, data):
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((os.getenv('SERVER_IP'), os.getenv('PORT')))
+    
+    request = {'command': command, 'data': data}
+    client_socket.send(pickle.dumps(request))
+    
+    response = client_socket.recv(1024)
+    client_socket.close()
+    
+    return pickle.loads(response)
+
+# Example usage
+if __name__ == "__main__":
+    response = send_request('login', {'username': 'user', 'password': 'pass'})
+    print(response)
+    
+    response = send_request('fetch_company_data', {'company': 'AAPL'})
+    print(response)
 
 
 
