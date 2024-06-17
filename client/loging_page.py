@@ -4,11 +4,18 @@ import keyboard, os, psutil
 import register_page, app, client
 
 def landing_page():
+    """
+    Displays the landing page of the SmartTraid application.
+    """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
     
 
 def loging_page():
+    """
+    Displays the login page of the SmartTraid application.
+    Allows users to enter their username and password to login.
+    """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
     username = st.text_input("Username")
@@ -16,7 +23,6 @@ def loging_page():
 
     if st.button("register"):
         register_page.register_page()
-
 
     if st.button("Login"):
         response = client.send_request('login', {'username': username, 'password': password})
@@ -31,18 +37,14 @@ def loging_page():
 
     if exit_app:
 
-    # Give a bit of delay for user experience
-
+        # Give a bit of delay for user experience
         time.sleep(5)
 
         # Close streamlit browser tab
-
         keyboard.press_and_release('ctrl+w')
 
         # Terminate streamlit python process
-
         pid = os.getpid()
-
         p = psutil.Process(pid)
         p.terminate()
 

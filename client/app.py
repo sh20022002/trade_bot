@@ -1,6 +1,16 @@
 import streamlit as st
 
 def client_page(user, compenies):
+    """
+    This function displays the client page of the SmartTraid application.
+    
+    Parameters:
+    - user: User object representing the current user
+    - compenies: List of available stock companies
+    
+    Returns:
+    None
+    """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
     st.sidebar.title("Analyze Stock")

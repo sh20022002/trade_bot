@@ -2,6 +2,12 @@ import scrapping, database, server
 import time
 
 def main():
+    """
+    The main function of the trade bot.
+
+    This function initializes the database, checks for open positions, and looks for trades.
+    It runs in a loop while the NYSE is open, with a delay of one hour between iterations.
+    """
     # initialize the database
     initialize()
     hour = 60 * 60
@@ -14,6 +20,12 @@ def main():
 
 
 def look_for_trades():
+    """
+    Look for potential trades.
+
+    This function iterates over the companies in the database and checks if the conditions for a trade are met.
+    If the conditions are met, it prints 'buy'.
+    """
     for compeny in database.get_compenies():
         df = compeny.get_df()
         if df['ADX'].iloc[-1] > compeny.strategy.Adx_open and df['ADX'].iloc[-1] < compeny.strategy.Adx_close:
@@ -26,6 +38,13 @@ def look_for_trades():
                                                    
 
 def chack_open_positions(user):
+    """
+    Check open positions for potential actions.
+
+    This function iterates over the open positions of a user and checks if any actions need to be taken.
+    If the current price of a position is below the stoploss or above the stopprofit, the position is closed.
+    If the current total price of a position exceeds a certain percentage of the user's stock value, the position is minimized.
+    """
     for position in user.open_positions:
         #chack all open positions for the transaction symbol
         avg_price = position.value
@@ -48,7 +67,15 @@ def chack_open_positions(user):
             #end of trend rsi around 70
             
             user.close_position(position)
+
+
 def initialize():
+    """
+    Initialize the database.
+
+    This function initializes the database by saving the S&P 500 companies and their information.
+    It returns a list of the saved companies.
+    """
     # initialize the database
     sp500_compenies = scraping.get_tickers()
 

@@ -218,39 +218,18 @@ class client():
 
 
     def chack_transaction(self, transaction):
-
-
         """
-
-
         Check if the client has enough cash to make a transaction.
 
-
-
         Args:
-
-
         - transaction (transaction): The transaction to check.
 
-
-
         Returns:
-
-
         - bool: True if the client has enough cash, False otherwise.
-
-
         """
-
-
         if transaction.total_price <= self.cash:
-
-
             return True
-
         else:
-
-
             return False
 
     
@@ -272,13 +251,26 @@ class client():
 
 
     def minimize(self, position, minimizeby):
+        """
+        Minimizes the position by selling or buying a specified amount of stocks.
 
-        amount_to_sell = round(postion.amount*minimizeby)
+        Args:
+            position (Position): The position to be minimized.
+            minimizeby (float): The percentage by which to minimize the position.
+
+        Returns:
+            None
+
+        Raises:
+            None
+        """
+
+        amount_to_sell = round(position.amount * minimizeby)
         if amount_to_sell > 0:
             if position.action == 'buy':
-                if autharaize(amount_to_sell * current_stock_price(position.symbol)):
+                if authorize(amount_to_sell * current_stock_price(position.symbol)):
                     self.sale(position.symbol, amount_to_sell)
             else:
-                if autharaize(amount_to_sell * current_stock_price(position.symbol)):
+                if authorize(amount_to_sell * current_stock_price(position.symbol)):
                     self.buy(position.symbol, amount_to_sell)
         

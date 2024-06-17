@@ -19,6 +19,7 @@ transactions = mydb['transactions']
 #users functions
 
 def add_user(user):
+    '''Adds a user to the database.'''
     pass
 
 def remove_from_db(symbol):
