@@ -215,24 +215,68 @@ class client():
 
 
 
-
-
-    def chack_transaction(self, transaction):
+    def buy(self, symbol, amount):
         """
-        Check if the client has enough cash to make a transaction.
+        Buy a specified amount of stocks.
 
         Args:
-        - transaction (transaction): The transaction to check.
+        - symbol (str): The symbol of the stock to buy.
+        - amount (int): The amount of stock to buy.
 
         Returns:
-        - bool: True if the client has enough cash, False otherwise.
+        - None
         """
-        if transaction.total_price <= self.cash:
-            return True
+        if self.autharaize(transaction.buy(symbol, amount)):
+            for position in self.open_positions:
+                if position.symbol == symbol:
+                    break
+            try:
+                position.add_to_position(amount)
+            except:
+                self.open_positions.append(transaction.buy(symbol, amount))
+                    
+            self.cash -= transaction.total_price
+            self.transactions.append(transaction.buy(symbol, amount))
+            self.protfolio.append(symbol)
+            self.stock_value += current_stock_price(symbol) * amount
+            return f'buy: {amount} {symbol}---cash in account: {self.cash}'
         else:
-            return False
+            return 'not sefichant cash in account!'
 
-    
+
+    def sell(self, symbol, amount):
+        """
+        Buy a specified amount of stocks.
+
+        Args:
+        - symbol (str): The symbol of the stock to buy.
+        - amount (int): The amount of stock to buy.
+
+        Returns:
+        - None
+        """
+        if self.autharaize(transaction.sell(symbol, amount)):
+            # to minimize risk takes shorts only if threre is sefichant cash in account to cover the short 
+            last_amount = 0
+            for position in self.open_positions:
+                if position.symbol == symbol:
+                    last_amount = position.amount
+                    break
+
+            minmized = False
+            try:
+                position.minimize(amount)
+                minmized = True
+            except:
+                self.open_positions.append(transaction.sell(symbol, amount))
+                    
+            self.cash += transaction.total_price
+            self.transactions.append(transaction.sell(symbol, amount))
+            self.protfolio.append(symbol)
+            self.stock_value += current_stock_price(symbol) * amount
+            return f'buy: {amount} {symbol}---cash in account: {self.cash}'
+        else:
+            return 'not sefichant cash in account!'
 
     def make_transaction(self, transaction):
         pass

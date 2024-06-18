@@ -17,7 +17,7 @@ class transaction:
         self.action = None
         self.symbol = None
         self.compeny = database.get_compeny(self.symbol)
-        self.value = current_stock_price(self.symbol)
+        self.value = 0
         self.amount = 0
         self.total_price = value * amount
         self.date = get_exchange_time()
@@ -33,6 +33,7 @@ class transaction:
         self.value = current_stock_price(self.symbol)
         self.total_price = self.value * amount
         self.date = get_exchange_time()
+        return self
         
 
     def sale(self, symbol, amount):
@@ -42,4 +43,10 @@ class transaction:
         self.value = current_stock_price(self.symbol)
         self.total_price = self.value * amount
         self.date = get_exchange_time()
+        return self
+        
+    def add_to_postion(self, amount):
+        self.amount += amount
+        self.value += current_stock_price(self.symbol)
+        self.total_price = self.value * self.amount
         
