@@ -7,6 +7,7 @@ create server key and crt
 1 - finish update database and add a function to store models using pickle
 1 - add buy and sell to database or/and find a way to update data at data base
 oop/ db oriented
+buy and sell - wirte the conditions for closing/ minimizing/ create new postion 
 
 front
 

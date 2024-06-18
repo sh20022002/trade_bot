@@ -257,17 +257,16 @@ class client():
         """
         if self.autharaize(transaction.sell(symbol, amount)):
             # to minimize risk takes shorts only if threre is sefichant cash in account to cover the short 
-            last_amount = 0
+            
             for position in self.open_positions:
                 if position.symbol == symbol:
-                    last_amount = position.amount
+                    pos = position
                     break
 
-            minmized = False
-            try:
-                position.minimize(amount)
-                minmized = True
-            except:
+            if pos:
+                self.minimize(position, amount)
+                
+            
                 self.open_positions.append(transaction.sell(symbol, amount))
                     
             self.cash += transaction.total_price
@@ -309,12 +308,12 @@ class client():
             None
         """
 
-        amount_to_sell = round(position.amount * minimizeby)
+        amount_to_sell = round(position.amount *(minimizeby/100)) 
         if amount_to_sell > 0:
             if position.action == 'buy':
                 if authorize(amount_to_sell * current_stock_price(position.symbol)):
-                    transaction.sale(position.symbol, amount_to_sell)
+                    self.sale(position.symbol, amount_to_sell)
             else:
                 if authorize(amount_to_sell * current_stock_price(position.symbol)):
-                    transaction.buy(position.symbol, amount_to_sell)
+                    self.buy(position.symbol, amount_to_sell)
         
