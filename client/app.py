@@ -1,6 +1,6 @@
 import streamlit as st
 
-def client_page(user, compenies):
+def client_page(user):
     """
     This function displays the client page of the SmartTraid application.
     
@@ -14,7 +14,14 @@ def client_page(user, compenies):
     st.title("SmartTraid")
     st.title("The Future of Trading.")
     st.sidebar.title("Analyze Stock")
-    stock_ticker = st.sidebar.selectbox("stock", compenies)
+    options = st.sidebar.toggle("protfolio/s&p500", True)
+    if options:
+        st.sidebar.title("protfolio")
+        stock_ticker = st.sidebar.selectbox("stock", user.protfolio)
+    else:
+        st.sidebar.title("s&p500")
+        stock_ticker = st.sidebar.selectbox("stock", compenies)
+    
     inicaitors = st.sidebar.multiselect('Inicaitors', ['Volume','sma-50', 'EMA', 'ADX', 'RSI'])
     interval = st.sidebar.radio('Interval', ['Day', 'Hour'])
     if interval == 'Day':
@@ -38,9 +45,11 @@ def client_page(user, compenies):
             st.write(f"GICS Sector: {compeny.GICS_Sector}")
             st.write(f"GICS Sub-Industry: {compeny.GICS_Sub_Industry}")
             st.write(f"Price: {compeny.price}")
-            st.write(f"Score: {compeny.score}")
-            st.write(f"Sentiment: {compeny.sentiment}")
-            st.write(f"Summary: {compeny.summary}")
+            
+            # st.write(f"Sentiment: {compeny.sentiment}")
+            # st.write(f"Summary: {compeny.summary}")
+
+
     exit_app = st.button("Shut Down")
     if exit_app:
         time.sleep(5)

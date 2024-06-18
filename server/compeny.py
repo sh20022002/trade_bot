@@ -22,7 +22,6 @@ class compeny:
         self.summery = get_stock_sum('short\long-none\sma\50\100\200-none\pricer-none\price-prediction')
         self.price = current_stock_price(self.symbol)
         self.last_price = None
-        self.score = None #predict_vall()
         self.sentiment = None
         
         

@@ -8,7 +8,7 @@ import socket
 import ssl
 import pickle
 
-def create_client_socket(port=9999):
+def create_client_socket():
     """
     Creates a client socket.
 
@@ -20,6 +20,9 @@ def create_client_socket(port=9999):
     """
     host = os.gethostname()
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    context.load_verify_locations('server.crt')
+    client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
     return client_socket
 
 
@@ -34,7 +37,7 @@ def send_request(command, data):
     Returns:
         any: The response received from the server.
     """
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket = create_client_socket()
     client_socket.connect((os.getenv('SERVER_IP'), os.getenv('PORT')))
     
     request = {'command': command, 'data': data}

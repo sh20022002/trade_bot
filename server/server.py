@@ -16,9 +16,10 @@ def handle_client(client_socket, client_id):
     Returns:
         None
     """
+    security_socket = context.wrap_socket(client_socket, server_side=True)
     while True:
         try:
-            request = client_socket.recv(1024)
+            request = security_socket.recv(1024)
             if not request:
                 break
             request_data = pickle.loads(request)
@@ -42,8 +43,9 @@ def handle_client(client_socket, client_id):
         except Exception as e:
             print(f"Error handling client: {e}")
             break
-    client_socket.close()
-    del clients[client_id]
+        finally:
+            security_socket.close()
+            del clients[client_id]
 
 def login(data):
     """
@@ -121,6 +123,9 @@ def server():
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.bind((os.getenv('IP'), os.getenv('PORT')))  
     server_socket.listen(5)
+    context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    context.load_cert_chain(certfile='server.crt', keyfile='server.key')
+
     print(f"Server listening on port {os.getenv('PORT')}...")
 
     while True:
