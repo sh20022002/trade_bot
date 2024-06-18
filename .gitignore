@@ -7,7 +7,5 @@ docker-compose.yml
 server/DockerFile
 server/server.crt
 server/server.key
-server/server.env
 db/DockerFile
 client/DockerFile
-client/client.env
