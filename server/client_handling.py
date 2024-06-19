@@ -316,3 +316,7 @@ class client():
                 if authorize(amount_to_sell * current_stock_price(position.symbol)):
                     self.buy(position.symbol, amount_to_sell)
         
+
+
+def update_database():
+    pass

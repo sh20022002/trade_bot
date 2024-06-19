@@ -6,12 +6,12 @@ create server key and crt
 2 - find if there is a problem with the probability of the markov model
 1 - finish update database and add a function to store models using pickle
 1 - add buy and sell to database or/and find a way to update data at data base
-oop/ db oriented
-buy and sell - wirte the conditions for closing/ minimizing/ create new postion 
+
+test buy and sell - wirte the conditions for closing/ minimizing/ create new postion 
 
 front
 
 - test client and server
 - create a account streagy system
-- add protfolio to client sidebar with quick veiw to Analyze the protfolio stocks
+
 dident add to all functions sma 20 and 100

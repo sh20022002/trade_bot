@@ -100,7 +100,7 @@ def buy(data):
     Returns:
         dict: The buy response.
     """
-    # Implement your buy logic here
+    
     return {'status': 'success', 'message': 'Bought'}
 
 def sell(data):
