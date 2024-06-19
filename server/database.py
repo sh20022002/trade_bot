@@ -132,7 +132,7 @@ class MongoSynced:
 
     def update_mongo(self):
         data = {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
-        users.update_one({'client_id': self._id}, {'$set': data}, upsert=True)
+        __name__.update_one({'client_id': self._id}, {'$set': data}, upsert=True) #?? s__name__ class name
 
     def __setattr__(self, name, value):
         super().__setattr__(name, value)

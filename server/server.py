@@ -1,7 +1,7 @@
 import socket
 import pickle
 import threading, os
-import database, main
+import database, main, client_handling
 
 clients = {}
 
@@ -36,6 +36,11 @@ def handle_client(client_socket, client_id):
                 response = buy(data)
             elif command == 'sell':
                 response = sell(data)
+            elif command == 'deposit':
+                response = deposit(data)
+            elif command == 'withdraw':
+                response = withdraw(data)
+
             else:
                 response = {'status': 'error', 'message': 'Invalid command'}
             
@@ -100,8 +105,10 @@ def buy(data):
     Returns:
         dict: The buy response.
     """
-    
-    return {'status': 'success', 'message': 'Bought'}
+    ans = client_handling.buy(data['symbol'], data['amount'])
+    if ans != 'not sefichant cash in account!':
+        return {'status': 'success', 'message': ans}
+    return {'status': 'error', 'message': ans}
 
 def sell(data):
     """
@@ -113,8 +120,39 @@ def sell(data):
     Returns:
         dict: The sell response.
     """
-    # Implement your sell logic here
-    return {'status': 'success', 'message': 'Sold'}
+    ans = client_handling.sell(data['symbol'], data['amount'])
+    if ans != 'not sefichant cash in account!':
+        return {'status': 'success', 'message': ans}
+    return {'status': 'error', 'message': ans}
+
+def deposit(data):
+    """
+    Perform the deposit logic.
+
+    Args:
+        data (dict): The deposit data.
+
+    Returns:
+        dict: The deposit response.
+    """
+    ans = client_handling.deposit(data['amount'])
+    return {'status': 'success', 'message': ans}
+
+def withdraw(data):
+    """
+    Perform the withdraw logic.
+
+    Args:
+        data (dict): The withdraw data.
+
+    Returns:
+        dict: The withdraw response.
+    """
+    ans = client_handling.withdraw(data['amount'])
+    if ans != 'not sefichant cash in account!':
+        return {'status': 'success', 'message': ans}
+    else:
+        return {'status': 'error', 'message': ans}
 
 def server():
     """

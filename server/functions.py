@@ -93,7 +93,7 @@ def add_sma(df):
     df['avg_high_low'] = (df['High'] + df['Low']) / 2
     smats = [20, 50, 100] # 100 and 200 also common
     for smat in smats:
-        df[f'sma-{smat}'] = df['avg_high_low'].rolling(smat).mean()
+        df[f'SMA{smat}'] = df['avg_high_low'].rolling(smat).mean()
     return df
 
 def add_ema(df):

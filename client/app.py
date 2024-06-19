@@ -22,7 +22,7 @@ def client_page(user):
         st.sidebar.title("s&p500")
         stock_ticker = st.sidebar.selectbox("stock", compenies)
     
-    inicaitors = st.sidebar.multiselect('Inicaitors', ['Volume','sma-50', 'EMA', 'ADX', 'RSI'])
+    inicaitors = st.sidebar.multiselect('Inicaitors', ['Volume','SMA20', 'SMA50', 'SMA100', 'EMA', 'ADX', 'RSI'])
     interval = st.sidebar.radio('Interval', ['Day', 'Hour'])
     if interval == 'Day':
         interval = '1d'
