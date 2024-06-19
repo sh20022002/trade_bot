@@ -264,27 +264,26 @@ class client():
                     break
 
             if pos:
-                self.minimize(position, amount)
-                
-            
+                self.minimize(pos, amount)
+                self.protfolio.remove(symbol) #???
+                self.open_positions.remove(pos) #???
+                self.stock_value -= current_stock_price(symbol) * amount
+            else:
                 self.open_positions.append(transaction.sell(symbol, amount))
+                self.stock_value += current_stock_price(symbol) * amount
                     
             self.cash += transaction.total_price
             self.transactions.append(transaction.sell(symbol, amount))
-            self.protfolio.append(symbol)
-            self.stock_value += current_stock_price(symbol) * amount
+            
+            
             return f'buy: {amount} {symbol}---cash in account: {self.cash}'
         else:
             return 'not sefichant cash in account!'
 
-    def make_transaction(self, transaction):
-        pass
+    
 
 
 
-
-    def close_position(self, position):
-        pass
 
     def autharaize(self, total_price):
         if total_price <= self.cash:

@@ -33,6 +33,23 @@ def client_page(user):
     st.sidebar.write(f"Name: {user.name}")
     st.sidebar.write(f"ID: {user.ID} ")
     st.write(f"Stock: {stock_ticker}")
+    st.write(f"Cash: {user.cash}")
+
+    
+    if st.button('withdraw'):
+        amount = st.number_input("Amount", 1)
+        response = client.send_request('withdraw', {'amount': amount})
+        if response['status'] == 'success':
+            st.write(f"withdraw: {amount}")
+            user.cash -= amount
+
+
+    if st.button("Deposit"):
+        amount = st.number_input("Amount", 1)
+        response = client.send_request('deposit', {'amount': amount})
+        if response['status'] == 'success':
+            user.cash += amount
+            st.write(f"Deposited: {amount}")
     
     
     for compeny in stocks:
@@ -45,6 +62,24 @@ def client_page(user):
             st.write(f"GICS Sector: {compeny.GICS_Sector}")
             st.write(f"GICS Sub-Industry: {compeny.GICS_Sub_Industry}")
             st.write(f"Price: {compeny.price}")
+
+            for open_position in user.open_positions:
+                if open_position.symbol == stock_ticker:
+                    st.write(f"Amount: {open_position.amount}")
+                    st.write(f"Price: {open_position.value}")
+                    st.write(f"Total Price: {open_position.total_price}")
+
+            if st.button("Buy"):
+                amount = st.number_input("Amount", 1)
+                response = client.send_request('buy', {'symbol': stock_ticker, 'amount': amount})
+                if response['status'] == 'success':
+                    st.write(f"Bought {amount} shares of {stock_ticker}")
+
+            if st.button("Sell"):
+                amount = st.number_input("Amount", 1)
+                response = client.send_request('sell', {'symbol': stock_ticker, 'amount': amount})
+                if response['status'] == 'success':
+                    st.write(f"Sold {amount} shares of {stock_ticker}")
             
             # st.write(f"Sentiment: {compeny.sentiment}")
             # st.write(f"Summary: {compeny.summary}")
