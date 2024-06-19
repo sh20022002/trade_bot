@@ -3,6 +3,7 @@
 import pymongo
 import os
 import pickle
+from functools import wraps
 
 from functions import generate_hash
 
@@ -113,3 +114,26 @@ def login(username, password):
         return user
     else:
         return None
+
+def mongo_sync(method):
+    @wraps(method)
+    def wrapper(self, *args, **kwargs):
+        result = method(self, *args, **kwargs)
+        # Update MongoDB document after the method call
+        self.update_mongo()
+        return result
+    return wrapper
+
+class MongoSynced:
+    def __init__(self, client_id, **kwargs):
+        self.client_id = client_id
+        self.__dict__.update(kwargs)
+        self.update_mongo()
+
+    def update_mongo(self):
+        data = {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+        users.update_one({'client_id': self._id}, {'$set': data}, upsert=True)
+
+    def __setattr__(self, name, value):
+        super().__setattr__(name, value)
+        self.update_mongo()

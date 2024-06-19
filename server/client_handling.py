@@ -4,14 +4,15 @@ from functions import generate_hash
 
 from scraping import exchange_rate, current_stock_price
 
-
+from database import MongoSynced
+import database
 
 
 # add database functions to the client class
 
 
 
-class client():
+class client(MongoSynced):
 
 
     """
@@ -52,7 +53,7 @@ class client():
 
 
     def __init__(self, first_name, last_name, password, ID, date_of_birth, profetion, cash, bank_account_number, bank, email, phone_number, address, city, country, postal_code):
-
+        super().__init__(self, transactions, open_positions, protfolio, cash, stock_value)
 
         self.name = first_name + last_name
 
@@ -130,7 +131,7 @@ class client():
 
     
 
-
+    @database.mongo_sync
     def deposit(self, amount, currency='USD'):
 
 
@@ -168,7 +169,7 @@ class client():
         return f'deposited: {amount}---cash in account: {self.cash}'
     
 
-
+    @database.mongo_sync
     def withdraw(self, amount):
 
 
@@ -214,7 +215,7 @@ class client():
             return 'not sefichant cash in account!'
 
 
-
+    @database.mongo_sync
     def buy(self, symbol, amount):
         """
         Buy a specified amount of stocks.
@@ -243,7 +244,7 @@ class client():
         else:
             return 'not sefichant cash in account!'
 
-
+    @database.mongo_sync
     def sell(self, symbol, amount):
         """
         Buy a specified amount of stocks.
@@ -318,5 +319,3 @@ class client():
         
 
 
-def update_database():
-    pass

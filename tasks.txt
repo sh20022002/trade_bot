@@ -15,3 +15,6 @@ front
 - create a account streagy system
 
 dident add to all functions sma 20 and 100
+
+
+needs test of mongosync in database and client handeling
