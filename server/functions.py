@@ -299,16 +299,5 @@ def chack_last_update_of_hmm_model(stock, interval):
 def generate_hash(password):
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-def chack_password(password):
-        if len(password) >= 8:
-            if any(char.isupper() for char in password):
-                if any(char.islower() for char in password):
-                    if any(char.isdigit() for char in password):
-                        if any(char in '!@#$%^&*()' for char in password):
-                            return generate_hash(password) 
-                    
-                        
-        raise ValueError('password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, one digit, and one special character')
-    
 
 print(chack_password('Aa123456@'))

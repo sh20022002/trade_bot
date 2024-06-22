@@ -36,10 +36,16 @@ def register_page():
         if password != confirm_password:
             st.error("Passwords do not match")
         else:
-            response = client.send_request('register', {'first_name': first_name, 'last_name': last_name, 'ID': ID, 'date_of_birth': date_of_birth, 'profetion': profetion, 'bank_account_number': bank_account_number, 'bank': bank, 'email': email, 'phone_number': phone_number, 'address': address, 'city': city, 'country': country, 'postal_code': postal_code, 'password': password})
-            if response['status'] == 'success':
-                st.success("Registered")
-                loging_page.loging_page()  
+            if chack_password(password):
+                response = client.send_request('register', {'first_name': first_name, 'last_name': last_name, 'ID': ID, 'date_of_birth': date_of_birth, 'profetion': profetion, 'bank_account_number': bank_account_number, 'bank': bank, 'email': email, 'phone_number': phone_number, 'address': address, 'city': city, 'country': country, 'postal_code': postal_code, 'password': password})
+                if response['status'] == 'success':
+                    st.success("Registered")
+                    loging_page.loging_page()
+
+                else:
+                    st.error("Failed to register. Please try again.") 
+            else:
+                st.error("Password must contain at least 8 characters, one uppercase, one lowercase, one digit, and one special character")         
 
     # exit button
 
@@ -57,3 +63,14 @@ def register_page():
         p = psutil.Process(pid)
         p.terminate()
  
+ 
+def chack_password(password):
+    if len(password) >= 8:
+        if any(char.isupper() for char in password):
+            if any(char.islower() for char in password):
+                if any(char.isdigit() for char in password):
+                    if any(char in '!@#$%^&*()' for char in password):
+                        return True 
+    return False
+                        
+    

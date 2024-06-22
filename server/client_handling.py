@@ -1,6 +1,6 @@
 '''all oop(object orianted programing) uses and there functions'''
 
-from functions import chack_password
+from functions import generate_hash
 
 from scraping import get_exchange_rate, current_stock_price
 
@@ -59,7 +59,7 @@ class client(MongoSynced):
 
         self.username = self.name + str(ID)
 
-        self.hash = functions.chack_password(password)
+        self.hash = functions.generate_hash(password)
                     
 
         self.ID = ID
