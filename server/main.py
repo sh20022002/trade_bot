@@ -19,24 +19,6 @@ def main():
         time.sleep(hour)
 
 
-def look_for_trades():
-    """
-    Look for potential trades.
-
-    This function iterates over the companies in the database and checks if the conditions for a trade are met.
-    If the conditions are met, it prints 'buy'.
-    """
-    for compeny in database.get_compenies():
-        df = compeny.get_df()
-        if df['ADX'].iloc[-1] > compeny.strategy.Adx_open and df['ADX'].iloc[-1] < compeny.strategy.Adx_close:
-            if df['RSI'].iloc[-1] <= compeny.strategy.RSI_short and df['RSI'].iloc[-1] >= compeny.strategy.RSI_long:
-                        interval, state, predction, probability = compeny.probability_of_returns('1h')
-                        Dinterval, Dstate, Dpredction, Dprobability = compeny.probability_of_returns('1h')
-                        if state == 'positive' and Dstate == 'positive':
-                            print('buy')
-
-                                                   
-
 def chack_open_positions(user):
     """
     Check open positions for potential actions.
@@ -63,11 +45,10 @@ def chack_open_positions(user):
                 minimizeby = (current_total_price / user.stock_value) - user.strategy.top_precent_from_protfolio
                 user.minimize(position, minimizeby)
 
-        if df['ADX'].iloc(-1) > position.strategy.adx and df['RSI'].iloc(-1) > position.strategy.rsi:# end  of trend adx around 50
+        if df['ADX'].iloc(-1) > 50 and df['RSI'].iloc(-1) > 60:# end  of trend adx around 50
             #end of trend rsi around 70
             
             user.close_position(position)
-
 
 def initialize():
     """
