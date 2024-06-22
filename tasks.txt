@@ -1,11 +1,7 @@
 test all new code and database
-add olgin with password and username
-update all client and server and chack funcinability
-update all docker files and compose
-create server key and crt
-2 - find if there is a problem with the probability of the markov model
-1 - finish update database and add a function to store models using pickle
-1 - add buy and sell to database or/and find a way to update data at data base
+client and server and chack funcinability
+2 - find if there is a problem with the probability of the markov model for fiving near to 1 in prdection
+1 - finish update database
 
 test buy and sell - wirte the conditions for closing/ minimizing/ create new postion 
 

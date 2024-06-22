@@ -166,4 +166,3 @@ def is_nyse_open():
     else:
         return False
 
-print(is_nyse_open())
