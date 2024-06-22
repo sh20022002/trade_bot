@@ -100,6 +100,6 @@ def optimize_strategy_ga(prices):
     algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=40, stats=None, halloffame=hof, verbose=True)
 
     return hof[0]
-
-strategy1 = strategy(avg_price=100, top_precent_from_protfolio=0.05, loss_precent=0.05, profit_precent=0.2, Adx_open=20, Adx_close=30, RSI_short=30, RSI_long=70)
-strategy1.__str__()
+#example
+strategy1 = strategy(avg_price=100, top_precent_from_protfolio=0.05, loss_precent=0.05, profit_precent=0.2, Adx_open=0.3 , Adx_close=0.5 , RSI_short=0.7, RSI_long=0.3)
+print(strategy1.stoploss)
