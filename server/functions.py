@@ -297,7 +297,4 @@ def chack_last_update_of_hmm_model(stock, interval):
 
 
 def generate_hash(password):
-    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
-
-print(chack_password('Aa123456@'))
+    return hashpw(password.encode('utf-8'), gensalt())
