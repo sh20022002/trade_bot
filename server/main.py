@@ -1,6 +1,6 @@
 import scrapping, database, server
 import time
-
+import strategy
 def main():
     """
     The main function of the trade bot.
@@ -11,10 +11,12 @@ def main():
     # initialize the database
     initialize()
     hour = 60 * 60
-
+    recmondation =  strategy.recomend_acttion
     while scrapping.is_nyse_open():
         chack_open_positions()
-        look_for_trades()
+        recmondation.reset()
+        strategy.adx_rsi()
+        
         
         time.sleep(hour)
 
