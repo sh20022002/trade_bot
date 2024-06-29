@@ -319,3 +319,9 @@ class client(MongoSynced):
         
 
 
+    def add_closed_position(self):
+        """
+        adds closed postion to the database with all transaction details
+        and id and the return on the investment
+        """
+        pass
