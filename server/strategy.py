@@ -135,7 +135,7 @@ class strategy:
 
 
 
-    def simulate_trading(self, prices):
+    def simulate_trading(self, prices, cash=10000, commission=0.01):
 
 
         """
@@ -145,12 +145,23 @@ class strategy:
 
 
 
-        This function simulates trading based on the strategy and returns the final portfolio value.
+        This function simulates trading based on the strategy and returns the final cash balance.
 
 
         """
-        pass
-
+            
+    
+        for price in prices:
+            if price <= self.stoploss or price >= self.stopprofit:
+                    # Close the position
+                    cash += price
+            else:
+                    # Check if the position exceeds the top percent from the portfolio
+                if (price / cash) >= self.top_percent_from_portfolio:
+                    # Minimize the position
+                    minimize_by = (price / cash) - self.top_percent_from_portfolio
+                    cash -= price * minimize_by
+        return cash
 
 
     def optimize(self):
@@ -239,7 +250,9 @@ def evaluate(strategy, prices):
 
     return strategy.simulate_trading(prices),
 
-
+def anlayze(symbol):
+    # This function analyzes a symbol and takes appropriate actions
+    pass
 
 
 def optimize_strategy_ga(prices):

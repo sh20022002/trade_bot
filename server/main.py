@@ -10,15 +10,19 @@ def main():
     """
     # initialize the database
     initialize()
-    hour = 60 * 60
+    h_hour = 30 * 60
     recmondation =  strategy.recomend_acttion
     while scrapping.is_nyse_open():
         chack_open_positions()
         recmondation.reset()
         strategy.adx_rsi()
+        for symbol in recmondation.buy:
+            strategy.anlayze(symbol)
+        for symbol in recmondation.sell:
+            strategy.anlayze(symbol)
         
         
-        time.sleep(hour)
+        time.sleep(h_hour)
 
 
 def chack_open_positions(user):
