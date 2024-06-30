@@ -1,0 +1,31 @@
+# Use an official Python runtime as a parent image
+FROM python:3.10.0
+
+# Set the working directory in the container
+WORKDIR /server
+
+# Copy the current directory contents into the container at /app
+COPY . /server/
+COPY server.crt /server.crt
+COPY server.key /server.key
+
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 9999
+
+# Define environment variable
+ENV NAME SmartTraidserver
+ENV EXCHANGE_API_KEY = '85dce83d89dc8448c7bd4130'
+ENV file_system = True
+ENV DB_HOST = '' '''url path'''
+ENV DB_PORT = 2701
+ENV sender_email = 'youremail@gmail.com'
+ENV sender_password = 'yourpassword'
+ENV IP = 0
+ENV PORT = 9999
+
+# Run app.py when the container launches
+CMD ["python", "server.py", "9999", "--crt=server.crt", "--key= server.key"]
