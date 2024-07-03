@@ -161,6 +161,8 @@ class strategy:
                     # Minimize the position
                     minimize_by = (price / cash) - self.top_percent_from_portfolio
                     cash -= price * minimize_by
+
+                    #use the class methods strategy.buy and strategy.sell to get the symbols to buy and sell
         return cash
 
 
