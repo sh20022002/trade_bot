@@ -135,7 +135,7 @@ class strategy:
 
 
 
-    def simulate_trading(self, prices, cash=10000, commission=0.01):
+    def simulate_trading(self, prices, symbol, cash=10000, commission=0.01):
 
 
         """
@@ -161,6 +161,7 @@ class strategy:
                     # Minimize the position
                     minimize_by = (price / cash) - self.top_percent_from_portfolio
                     cash -= price * minimize_by
+                    adx_rsi(backtest=True, symbol=symbol)
 
                     #use the class methods strategy.buy and strategy.sell to get the symbols to buy and sell
         return cash
@@ -180,7 +181,7 @@ class strategy:
 
 
 
-    def adx_rsi(self):
+    def adx_rsi(self, backtest=False ,symbel=None):
 
 
         """
@@ -200,10 +201,15 @@ class strategy:
         
 
         for compeny in database.get_compenies():
-
-
-            df = compeny.get_df()
-
+            
+            if backtest:
+                if copeny.symbel == symbel and symbol != None:
+                    backtest_days=30
+                    lookback_days=14
+                    days = backtest_days + lookback_days
+                    df = compeny.get_df(Days=days)
+            else:
+                df = compeny.get_df()
 
             if 30 <= df['ADX'].iloc[-1] <= 50:
 
