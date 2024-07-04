@@ -14,14 +14,16 @@ COPY server.key /server.key
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 80 available to the world outside this container
-EXPOSE 9999
+EXPOSE 3000
 
 # Define environment variable
 ENV NAME SmartTraidserver
 ENV EXCHANGE_API_KEY = '85dce83d89dc8448c7bd4130'
-ENV file_system = True
-ENV DB_HOST = '' '''url path'''
+ENV file_system = False
+ENV DB_HOST = 
 ENV DB_PORT = 2701
+ENV DB_USER: root
+ENV DB_PASSWORD: te13@t$3t
 ENV sender_email = 'youremail@gmail.com'
 ENV sender_password = 'yourpassword'
 ENV IP = 0

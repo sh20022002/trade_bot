@@ -1,0 +1,55 @@
+Steps to Run Docker Compose on a Cloud Server
+1. Provision a Cloud Server:
+
+- Choose a cloud provider (e.g., AWS, Google Cloud, Azure).
+- Create a virtual machine (VM) instance with the desired specifications.
+2. Connect to Your Cloud Server:
+
+- Use SSH to connect to your cloud server.
+- Install Docker and Docker Compose:
+
+bash:
+ssh -i /path/to/your-key-pair.pem ubuntu@your-ec2-public-dns
+
+
+3. Install Docker.
+- Install Docker Compose.
+- Transfer Your Project to the Cloud Server:
+
+bash:
+sudo apt-get update
+sudo apt-get install -y apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+sudo apt-get update
+sudo apt-get install -y docker-ce
+sudo usermod -aG docker ubuntu
+
+bash:
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+
+
+4. Use scp or another method to transfer your project files to the cloud server.
+- Run Docker Compose:
+
+- Navigate to the project directory and run Docker Compose.
+
+Example: Running Docker Compose on AWS EC2
+1. Provision an AWS EC2 Instance
+- Go to the AWS Management Console.
+- Launch a new EC2 instance.
+- Choose an Amazon Machine Image (AMI), e.g., Ubuntu Server.
+- Select an instance type, e.g., t2.micro (free tier).
+- Configure instance details, add storage, and add tags if needed.
+- Configure security group to allow SSH (port 22), HTTP (port 80), and other necessary ports.
+- Review and launch the instance. Download the key pair (.pem file) for SSH access.
+
+
+scp -i /path/to/your-key-pair.pem -r /path/to/your/project ubuntu@your-ec2-public-dns:/home/ubuntu/
+
+cd /home/ubuntu/project
+
+docker-compose up --build
+
+
