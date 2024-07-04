@@ -136,34 +136,24 @@ class strategy:
 
 
     def simulate_trading(self, prices, symbol, cash=10000, commission=0.01):
-
-
         """
+        Simulates trading based on given prices and strategy parameters.
 
+        Args:
+            prices (list): List of prices for the given symbol.
+            symbol (str): Symbol for which trading is being simulated.
+            cash (float, optional): Initial cash amount. Defaults to 10000.
+            commission (float, optional): Commission rate for each trade. Defaults to 0.01.
 
-        Simulates trading based on the strategy.
-
-
-
-        This function simulates trading based on the strategy and returns the final cash balance.
-
-
+        Returns:
+            float: Remaining cash after simulating the trading strategy.
         """
-            
-    
-        for price in prices:
-            if price <= self.stoploss or price >= self.stopprofit:
-                    # Close the position
-                    cash += price
-            else:
-                    # Check if the position exceeds the top percent from the portfolio
-                if (price / cash) >= self.top_percent_from_portfolio:
-                    # Minimize the position
-                    minimize_by = (price / cash) - self.top_percent_from_portfolio
-                    cash -= price * minimize_by
-                    adx_rsi(backtest=True, symbol=symbol)
-
-                    #use the class methods strategy.buy and strategy.sell to get the symbols to buy and sell
+        prices = np.array(prices)
+        positions = np.where((prices <= self.stoploss) | (prices >= self.stopprofit), 1, 0)
+        cash += np.sum(prices[positions == 1])
+        minimize_positions = np.where((prices / cash) >= self.top_percent_from_portfolio, 1, 0)
+        cash -= np.sum(prices[minimize_positions == 1] * ((prices[minimize_positions == 1] / cash) - self.top_percent_from_portfolio))
+        self.adx_rsi(backtest=True, symbol=symbol)
         return cash
 
 
