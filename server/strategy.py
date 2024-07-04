@@ -308,89 +308,51 @@ def anlayze(symbol):
 
 
 
+PARAMETER_RANGES = {
+    'top_percent_from_portfolio': (0.01, 0.2),
+    'loss_percent': (0.01, 0.2),
+    'profit_percent': (0.05, 1.5),
+}
+
+# Define the fitness function
+creator.create("FitnessMax", base.Fitness, weights=(1.0,))
+creator.create("Individual", list, fitness=creator.FitnessMax)
+
+# Register the genetic algorithm operators
+toolbox = base.Toolbox()
+toolbox.register("attr_float", random.random)
+
+def create_individual():
+    return [random.uniform(*PARAMETER_RANGES[param]) for param in PARAMETER_RANGES]
+
+toolbox.register("individual", tools.initIterate, creator.Individual, create_individual)
+toolbox.register("population", tools.initRepeat, list, toolbox.individual)
+toolbox.register("mate", tools.cxBlend, alpha=0.5)
+toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.2)
+toolbox.register("select", tools.selTournament, tournsize=3)
+
+def evaluate_individual(individual, prices):
+    params = {param: value for param, value in zip(PARAMETER_RANGES.keys(), individual)}
+    strategy = Strategy(avg_price=100, **params)
+    final_cash = strategy.simulate_trading(prices, symbol="AAPL")
+    return final_cash,  # Return a tuple
+
+toolbox.register("evaluate", evaluate_individual, prices=[90, 95, 105, 110, 115, 120, 125, 130, 135, 140])
+
 def optimize_strategy_ga(prices):
-
-
-
-    # Define the individual and population
-
-
-
-    creator.create("FitnessMax", base.Fitness, weights=(1.0,))
-
-
-
-    creator.create("Individual", list, fitness=creator.FitnessMax)
-
-
-
-
-    toolbox = base.Toolbox()
-
-
-
-    toolbox.register("attr_float", random.random)
-
-
-
-    toolbox.register("individual", tools.initRepeat, creator.Individual, toolbox.attr_float, 4)
-
-
-
-    toolbox.register("population", tools.initRepeat, list, toolbox.individual)
-
-
-
-
-    # Register the genetic algorithm operators
-
-
-
-    toolbox.register("mate", tools.cxBlend, alpha=0.5)
-
-
-
-    toolbox.register("mutate", tools.mutGaussian, mu=0, sigma=1, indpb=0.2)
-
-
-
-    toolbox.register("select", tools.selTournament, tournsize=3)
-
-
-
-    toolbox.register("evaluate", evaluate, prices=prices)
-
-
-
-
+    # Initialize the population
     population = toolbox.population(n=100)
-
-
-
     hof = tools.HallOfFame(1)
-
-
-
+    stats = tools.Statistics(lambda ind: ind.fitness.values)
+    stats.register("avg", lambda x: sum(x) / len(x))
+    stats.register("min", min)
+    stats.register("max", max)
 
     # Run the genetic algorithm
-
-
-
-    algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=40, stats=None, halloffame=hof, verbose=True)
-
-
-
-
+    algorithms.eaSimple(population, toolbox, cxpb=0.5, mutpb=0.2, ngen=40, stats=stats, halloffame=hof, verbose=True)
+    
+    # Return the best individual
     return hof[0]
 
 
 
-#example
-
-
-
-# strategy1 = strategy(avg_price=100, top_precent_from_protfolio=0.05, loss_precent=0.05, profit_precent=0.2, Adx_open=0.3 , Adx_close=0.5 , RSI_short=0.7, RSI_long=0.3)
-
-
-
-# print(strategy1.stoploss)
