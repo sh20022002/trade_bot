@@ -1,0 +1,131 @@
+Instructions to Deploy the Application on Localhost Using Docker Compose Prerequisites
+Install Docker:
+
+Ensure Docker is installed on your machine. You can download it from Docker's official website.
+Install Docker Compose:
+
+Docker Compose is typically included with Docker Desktop. For Linux, you may need to install it separately. Follow the instructions on Docker Compose installation.
+Steps to Deploy
+Create the Project Directory Structure:
+
+Ensure you have the following directory structure:
+Copy code
+project-root/
+├── docker-compose.yml
+├── server/
+│   └── Dockerfile
+├── client/
+│   └── Dockerfile
+Create the Docker Compose File:
+
+Create a file named docker-compose.yml in the project root directory with the following content:
+yaml
+Copy code
+version: '3.8'
+
+services:
+  db:
+    image: mongo:4.4
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: your_db_user
+      MONGO_INITDB_ROOT_PASSWORD: your_db_password
+      MONGO_INITDB_DATABASE: your_db_name
+    ports:
+      - "27017:27017"
+    volumes:
+      - db_data:/data/db
+
+  server:
+    build: ./server
+    environment:
+      DB_HOST: db
+      DB_PORT: 27017
+      DB_USER: your_db_user
+      DB_PASSWORD: your_db_password
+      DB_NAME: your_db_name
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  client:
+    build: ./client
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+
+volumes:
+  db_data:
+Create the Server Dockerfile:
+
+In the server directory, create a file named Dockerfile with the following content:
+Dockerfile
+Copy code
+# Use an official Python runtime as a parent image
+FROM python:3.8-slim
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 8000 available to the world outside this container
+EXPOSE 8000
+
+# Run the server
+CMD ["python", "app.py"]
+Create the Client Dockerfile:
+
+In the client directory, create a file named Dockerfile with the following content:
+Dockerfile
+Copy code
+# Use an official Node.js runtime as a parent image
+FROM node:14
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install any needed packages
+RUN npm install
+
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
+
+# Run the client
+CMD ["npm", "start"]
+Build and Run the Containers:
+
+Navigate to the project root directory in your terminal and run the following commands:
+bash
+Copy code
+# Navigate to the directory containing docker-compose.yml
+cd /path/to/your/project
+
+# Build and start the containers
+docker-compose up --build
+Access the Services:
+
+The services will be accessible on the following ports:
+MongoDB: localhost:27017
+Server: localhost:8000
+Client: localhost:3000
+Stopping the Containers:
+
+To stop the containers, press Ctrl+C in the terminal where docker-compose up is running, or run the following command in the project directory:
+bash
+Copy code
+docker-compose down
+Additional Tips
+Environment Variables: Use .env files to manage environment variables more securely.
+Data Persistence: Use Docker volumes to persist data across container restarts.
+Logs: Use docker-compose logs to view the logs for all services, or docker-compose logs <service_name> to view logs for a specific service.
+By following these steps, you can deploy your multi-container application on localhost using Docker Compose.
+
