@@ -4,6 +4,5 @@ api_keys.py
 models
 train_sk_model.ipynb
 docker-compose.yml
-server/server.crt
-server/server.key
+crts
 db/DockerFile

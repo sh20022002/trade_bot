@@ -62,7 +62,7 @@ def login(data):
     Returns:
         dict: The login response.
     """
-    # Implement your login logic here
+    # Imp
     return {'status': 'success', 'message': 'Logged in',  'compenies': 'compenies'}
 
 def register(data):
@@ -158,7 +158,7 @@ def server():
     """
     Start the server and listen for client connections.
     """
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server_socket = socket.socket(socket.AF_INET, socket.)
     server_socket.bind((os.getenv('IP'), os.getenv('PORT')))  
     server_socket.listen(5)
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)

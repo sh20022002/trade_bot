@@ -5,6 +5,21 @@ __trading system__
 i created a trading system and bot the uses a microservices approuch, that contiosly chack s&p500 compenys and open postions for capitalazing on market flactuations of stocks using a models to predict prices and the probability of the prediction and uses different quant trading methods to find each stock its best strategy useing genetic algoritham optimazition the data is gatherd by scraping the models and costumer data are stored in a database servies and all system actions are rund in the server.
 
 
+the system is seprated to 3 serviecies a database server the server and the client side.
+
+1. the database is a mongo db instance build
+with:
+    - stocks-consumer collection that
+
+    - stocks collection
+
+    - clients collection
+
+    - models collection
+    
+    - transaction collection
+
+
 
 
 
