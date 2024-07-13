@@ -6,3 +6,4 @@ train_sk_model.ipynb
 docker-compose.yml
 crts
 db/DockerFile
+mongodata
