@@ -62,8 +62,12 @@ def login(data):
     Returns:
         dict: The login response.
     """
-    # Imp
-    return {'status': 'success', 'message': 'Logged in',  'compenies': 'compenies'}
+    
+    res = database.login(data['username'], data['password'])
+    if res == None:
+        return {'status': 'error', 'message': 'Invalid credentials'}
+    compenies = database.get_compenies()
+    return {'status': 'success', 'message': 'Logged in', 'user': res,  'compenies': compenies }
 
 def register(data):
     """

@@ -1,6 +1,6 @@
 import streamlit as st
 
-def client_page(user):
+def client_page(user, compenies):
     """
     This function displays the client page of the SmartTraid application.
     

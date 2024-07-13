@@ -27,7 +27,7 @@ def loging_page():
     if st.button("Login"):
         response = client.send_request('login', {'username': username, 'password': password})
         if response['status'] == 'success':
-            app.client_page(response['messege'], response['compenies'])
+            app.client_page(response['user'], response['compenies'])
         else:
             st.error("Invalid username or password")
 

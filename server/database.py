@@ -110,10 +110,10 @@ def get_client(name):
 def login(username, password):
     '''Logs in a user with the given username and password.'''
     user = users.find_one({'username:': username})
-    if user['hash'] == generate_hash(password):
-        return user
-    else:
-        return None
+    if user is not None:
+        if user['hash'] == generate_hash(password):
+            return user
+    return None
 
 def mongo_sync(method):
     @wraps(method)
