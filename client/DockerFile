@@ -1,23 +1,21 @@
 # Use an official Python runtime as a parent image
-FROM python:3.10.0
+FROM python:3.10-slim
 
 # Set the working directory in the container
-WORKDIR /client
+WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /client/
-COPY . /crts/server.crt 
+# Copy the requirements file and install Python dependencies
+COPY . . 
+COPY /crts/ /app/crts/
+# COPY ./client/requirements.txt /app/requirements.txt
 
-# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 80 available to the world outside this container
-EXPOSE 9999
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY ./client /app
 
-# Define environment variable
-ENV NAME SmartTraid
-ENV IP = 0
-ENV PORT = 9999
+# Expose the port Streamlit runs on
+EXPOSE 8501
 
-# Run app.py when the container launches
-CMD ["python", "loging_page.py"]
+# Command to run on container start
+CMD ["streamlit", "run", "loging_page.py"]

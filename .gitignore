@@ -4,6 +4,8 @@ api_keys.py
 models
 train_sk_model.ipynb
 docker-compose.yml
-crts
-db/DockerFile
+server/crts
+client/crts
+server/DockerFile
+client/DockerFile
 mongodata
