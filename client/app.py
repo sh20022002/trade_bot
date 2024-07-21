@@ -85,12 +85,3 @@ def client_page(user, compenies):
             # st.write(f"Summary: {compeny.summary}")
 
 
-    exit_app = st.button("Shut Down")
-    if exit_app:
-        time.sleep(5)
-        keyboard.press_and_release('ctrl+w')
-        pid = os.getpid()
-        p = psutil.Process(pid)
-        p.terminate()
-#st.sidebar.radio('Interval', ['Day', 'Hour'])
-

@@ -31,25 +31,11 @@ def loging_page():
         else:
             st.error("Invalid username or password")
 
-    # exit button
-
-    exit_app = st.button("Shut Down")
-
-    if exit_app:
-
-        # Give a bit of delay for user experience
-        time.sleep(5)
-
-        # Close streamlit browser tab
-        keyboard.press_and_release('ctrl+w')
-
-        # Terminate streamlit python process
-        pid = os.getpid()
-        p = psutil.Process(pid)
-        p.terminate()
+   
 
 
-
+if __name__ == '__main__':
+    loging_page()
 
 
  

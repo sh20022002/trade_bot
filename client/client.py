@@ -1,9 +1,6 @@
 
 import streamlit as st
 import time
-import keyboard
-import os
-import psutil
 import socket
 import ssl
 import pickle
@@ -18,7 +15,6 @@ def create_client_socket():
     Returns:
         socket.socket: The client socket object.
     """
-    host = os.gethostname()
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
     context.load_verify_locations('server.crt')

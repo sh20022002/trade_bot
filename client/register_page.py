@@ -1,5 +1,5 @@
 import streamlit as st
-import keyboard, os, psutil
+import os
 
 
 def register_page():
@@ -47,23 +47,7 @@ def register_page():
             else:
                 st.error("Password must contain at least 8 characters, one uppercase, one lowercase, one digit, and one special character")         
 
-    # exit button
-
-    exit_app = st.button("Shut Down")
-
-    if exit_app:
-        # Give a bit of delay for user experience
-        time.sleep(5)
-
-        # Close streamlit browser tab
-        keyboard.press_and_release('ctrl+w')
-
-        # Terminate streamlit python process
-        pid = os.getpid()
-        p = psutil.Process(pid)
-        p.terminate()
- 
- 
+    
 def chack_password(password):
     if len(password) >= 8:
         if any(char.isupper() for char in password):
