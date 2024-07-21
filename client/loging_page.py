@@ -3,13 +3,7 @@ import bcrypt
 import keyboard, os, psutil
 import register_page, app, client
 
-def landing_page():
-    """
-    Displays the landing page of the SmartTraid application.
-    """
-    st.title("SmartTraid")
-    st.title("The Future of Trading.")
-    
+
 
 def loging_page():
     """
@@ -22,7 +16,8 @@ def loging_page():
     password = st.text_input("Password", type='password')
 
     if st.button("register"):
-        register_page.register_page()
+        pg = st.navigation([st.Page("loging_page.py"), st.Page("register_page.py")])
+        pg.run()
 
     if st.button("Login"):
         response = client.send_request('login', {'username': username, 'password': password})
