@@ -24,8 +24,8 @@ def register_page():
     city = st.text_input("City")
     country = st.text_input("Country")
     postal_code = st.text_input("Postal Code")
-    password = st.text_input("Password")
-    confirm_password = st.text_input("Confirm Password")
+    password = st.text_input("Password", type='password')
+    confirm_password = st.text_input("Confirm Password", type='password')
 
     # create a post request to the server
     # send the user data to the server
@@ -40,8 +40,7 @@ def register_page():
                 response = client.send_request('register', {'first_name': first_name, 'last_name': last_name, 'ID': ID, 'date_of_birth': date_of_birth, 'profetion': profetion, 'bank_account_number': bank_account_number, 'bank': bank, 'email': email, 'phone_number': phone_number, 'address': address, 'city': city, 'country': country, 'postal_code': postal_code, 'password': password})
                 if response['status'] == 'success':
                     st.success("Registered")
-                    pg = st.navigation([st.Page("register_page.py"), st.Page("loging_page.py")])
-                    pg.run()
+                    go_to_login()
 
 
                 else:

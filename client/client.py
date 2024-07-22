@@ -39,7 +39,7 @@ def send_request(command, data):
     request = {'command': command, 'data': data}
     client_socket.send(pickle.dumps(request))
     
-    response = client_socket.recv(1024)
+    response = client_socket.recv(2048)
     client_socket.close()
     
     return pickle.loads(response)

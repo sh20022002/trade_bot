@@ -4,6 +4,18 @@ import keyboard, os, psutil
 import register_page, app, client
 
 
+if 'page' not in st.session_state:
+    st.session_state['page'] = 'login'
+
+def go_to_login():
+    st.session_state['page'] = 'login'
+
+def go_to_register():
+    st.session_state['page'] = 'register'
+
+def go_to_app():
+    st.session_state['page'] = 'app'
+
 
 def loging_page():
     """
@@ -16,21 +28,26 @@ def loging_page():
     password = st.text_input("Password", type='password')
 
     if st.button("register"):
-        pg = st.navigation([st.Page("loging_page.py"), st.Page("register_page.py")])
-        pg.run()
-
+        go_to_register()
+        
     if st.button("Login"):
         response = client.send_request('login', {'username': username, 'password': password})
         if response['status'] == 'success':
-            app.client_page(response['user'], response['compenies'])
+            st.success("login successful!")
+            compenys = response['compenys']
+            user = response['user']
+            go_to_app()
         else:
             st.error("Invalid username or password")
 
    
-
-
-if __name__ == '__main__':
+if st.session_state['page'] == 'login':
     loging_page()
+elif st.session_state['page'] == 'register':
+    register_page.register_page()
+elif st.session_state['page'] == 'app':
+    app.client_page(user, compenys)
+
 
 
  
