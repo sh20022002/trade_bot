@@ -17,7 +17,7 @@ def create_client_socket():
     """
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
-    context.load_verify_locations('server.crt')
+    context.load_verify_locations('/ctrs/server.csr')
     client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
     return client_socket
 

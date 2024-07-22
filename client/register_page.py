@@ -16,7 +16,7 @@ def register_page():
     first_name = st.text_input("Name", key='first_name')
     last_name = st.text_input("Last Name", key='last_name')
     ID = st.text_input("ID", key='ID')
-    date_of_birth = st.date_input("Date of Birth",max_value=date.today() - timedelta(days=365*100), min_value=date.today() - timedelta(days=365*18), key='date_of_birth')
+    date_of_birth = st.date_input("Date of Birth",max_value=date.today() - timedelta(days=365*18), min_value=date.today() - timedelta(days=365*100), key='date_of_birth')
     profetion = st.text_input("Profetion")
     bank_account_number = st.text_input("Bank Account Number", key='bank_account_number')
     bank = st.text_input("Bank", key='bank')
