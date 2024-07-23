@@ -35,7 +35,14 @@ def send_request(command, data):
         any: The response received from the server.
     """
     client_socket = create_client_socket()
-    client_socket.connect((os.getenv('SERVER_IP'), os.getenv('PORT')))
+    server_ip = os.getenv('SERVER_IP')
+    server_port = os.getenv('SERVER_PORT', type=int)
+
+    if not server_ip or server_port is None:
+        raise ValueError("Server IP or Port is not set correctly")
+
+    # Now use server_ip and server_port in your connection logic
+    client_socket.connect((server_ip, int(server_port)))
     
     cert = client_socket.getpeercert()
     

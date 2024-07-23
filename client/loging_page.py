@@ -35,14 +35,14 @@ def loging_page():
         # has a min and max length for limiting code injection
         min_char = 8
         max_char = 20
-        if len(password) < min_char or len(password) > max_char:
+        if len(password) <= min_char or len(password) >= max_char:
             st.error("Please enter a valid password")
 
         elif register_page.chack_password(password) == False:
             st.error("Password must contain at least 8 characters, one uppercase, one lowercase, one digit, and one special character")
 
         # check if the username is valid and not a code injection
-        elif len(username) < min_char or len(username) > max_char:
+        elif len(username) <= min_char or len(username) >= max_char:
             st.error("Please enter a valid username")
 
         else:    
