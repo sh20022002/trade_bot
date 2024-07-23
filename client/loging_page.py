@@ -24,21 +24,36 @@ def loging_page():
     """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
-    username = st.text_input("Username")
+    username = st.text_input("Username", key='username')
     password = st.text_input("Password", type='password')
 
     if st.button("register"):
         go_to_register()
         
     if st.button("Login"):
-        response = client.send_request('login', {'username': username, 'password': password})
-        if response['status'] == 'success':
-            st.success("login successful!")
-            compenys = response['compenys']
-            user = response['user']
-            go_to_app()
-        else:
-            st.error("Invalid username or password")
+        # chacck if the password is valid
+        # has a min and max length for limiting code injection
+        min_char = 8
+        max_char = 20
+        if len(password) < min_char or len(password) > max_char:
+            st.error("Please enter a valid password")
+
+        elif register_page.chack_password(password) == False:
+            st.error("Password must contain at least 8 characters, one uppercase, one lowercase, one digit, and one special character")
+
+        # check if the username is valid and not a code injection
+        elif len(username) < min_char or len(username) > max_char:
+            st.error("Please enter a valid username")
+
+        else:    
+            response = client.send_request('login', {'username': username, 'password': password})
+            if response['status'] == 'success':
+                st.success("login successful!")
+                compenys = response['compenys']
+                user = response['user']
+                go_to_app()
+            else:
+                st.error("Invalid username or password")
 
    
 if st.session_state['page'] == 'login':
