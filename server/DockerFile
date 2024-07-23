@@ -30,4 +30,4 @@ ENV DB_HOST=db \
     EXCHANGE_API_KEY=85dce83d89dc8448c7bd4130
 
 # Run server.py when the container launches
-CMD ["python", "server.py", "9999", "--crt=crts/server.crt", "--key=crts/server.key"]
+CMD ["python", "server.py", "9999", "--crt=crts/server.csr", "--key=crts/server.key"]

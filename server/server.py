@@ -5,7 +5,7 @@ import database, main, client_handling
 
 clients = {}
 
-def handle_client(client_socket, client_id):
+def handle_client(client_socket, client_id, context):
     """
     Handle the client requests and perform the corresponding actions based on the command received.
 
@@ -166,7 +166,7 @@ def server():
     server_socket.bind((os.getenv('IP'), os.getenv('PORT')))  
     server_socket.listen(5)
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(certfile='server.crt', keyfile='server.key')
+    context.load_cert_chain(certfile='crts/server.csr', keyfile='crts/server.key')
 
     print(f"Server listening on port {os.getenv('PORT')}...")
 
@@ -175,7 +175,7 @@ def server():
         client_id = addr[1]
         print(f"Accepted connection from {addr} with client ID {client_id}")
         clients[client_id] = client_socket
-        client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
+        client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id, context))
         client_handler.start()
 
 if __name__ == "__main__":

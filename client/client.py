@@ -16,12 +16,9 @@ def create_client_socket():
         socket.socket: The client socket object.
     """
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+    context = ssl.create_default_context()
     
-    cert_file_path = os.path.join(os.path.dirname(__file__), 'crts', 'server.csr')
-    # Assuming the 'crts' folder is in the same directory as the script
-
-    context.load_verify_locations(cert_file_path)
+    
     client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
     return client_socket
 
@@ -39,6 +36,8 @@ def send_request(command, data):
     """
     client_socket = create_client_socket()
     client_socket.connect((os.getenv('SERVER_IP'), os.getenv('PORT')))
+    
+    cert = client_socket.getpeercert()
     
     request = {'command': command, 'data': data}
     client_socket.send(pickle.dumps(request))
