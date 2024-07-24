@@ -17,6 +17,7 @@ def create_client_socket():
     """
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     context = ssl.create_default_context()
+    context.load_verify_locations("certs/certificate.crt")
     
     
     client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
@@ -36,13 +37,13 @@ def send_request(command, data):
     """
     client_socket = create_client_socket()
     server_ip = os.getenv('SERVER_IP')
-    server_port = os.getenv('SERVER_PORT', type=int)
+    server_port = int(os.getenv('SERVER_PORT'))
 
     if not server_ip or server_port is None:
         raise ValueError("Server IP or Port is not set correctly")
 
     # Now use server_ip and server_port in your connection logic
-    client_socket.connect((server_ip, int(server_port)))
+    client_socket.connect((server_ip, server_port))
     
     cert = client_socket.getpeercert()
     

@@ -166,7 +166,7 @@ def server():
     server_socket.bind((os.getenv('IP'), os.getenv('PORT')))  
     server_socket.listen(5)
     context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    context.load_cert_chain(certfile='crts/server.csr', keyfile='crts/server.key')
+    context.load_cert_chain(certfile='certs/server.crt', keyfile='certs/server.key')
 
     print(f"Server listening on port {os.getenv('PORT')}...")
 
