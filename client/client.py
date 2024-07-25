@@ -16,11 +16,16 @@ def create_client_socket():
         socket.socket: The client socket object.
     """
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    context = ssl.create_default_context()
-    context.load_verify_locations("certs/certificate.crt")
+    try:
+        context = ssl.create_default_context()
+        context.load_verify_locations("certs/certificate.crt")
     
     
-    client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
+        client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
+    except ssl.SSLError as e:
+        print(f"SSL error: {e}")
+        return
+        
     return client_socket
 
 
@@ -37,7 +42,7 @@ def send_request(command, data):
     """
     client_socket = create_client_socket()
     server_ip = os.getenv('SERVER_IP')
-    server_port = int(os.getenv('SERVER_PORT'))
+    server_port = os.getenv('SERVER_PORT')
 
     if not server_ip or server_port is None:
         raise ValueError("Server IP or Port is not set correctly")

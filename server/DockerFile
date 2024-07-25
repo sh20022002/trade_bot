@@ -19,7 +19,8 @@ COPY . .
 EXPOSE 3000
 
 # Define environment variables
-ENV DB_HOST=db \
+ENV PORT=3000 \
+    DB_HOST=db \
     DB_PORT=27017 \
     DB_USER=root \
     DB_PASSWORD=te13@t$3t \
