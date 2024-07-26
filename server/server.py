@@ -1,11 +1,11 @@
 import socket
 import pickle
-import threading, os
+import threading, os, ssl
 import database, main, client_handling
 
 clients = {}
 
-def handle_client(client_socket, client_id, context):
+def handle_client(socket, client_id):
     """
     Handle the client requests and perform the corresponding actions based on the command received.
 
@@ -17,42 +17,42 @@ def handle_client(client_socket, client_id, context):
         None
     """
     
-    with context.wrap_socket(client_socket, server_side=True) as security_socket:
+    
 
-        while True:
-            try:
-                request = security_socket.recv(1024)
-                if not request:
-                    break
-                request_data = pickle.loads(request)
-                command = request_data['command']
-                data = request_data['data']
-            
-                if command == 'login':
-                 response = login(data)
-                elif command == 'register':
-                    response = register(data)
-                elif command == 'fetch_company_data':
-                    response = fetch_company_data(data)
-                elif command == 'buy':
-                    response = buy(data)
-                elif command == 'sell':
-                    response = sell(data)
-                elif command == 'deposit':
-                    response = deposit(data)
-                elif command == 'withdraw':
-                    response = withdraw(data)
-
-                else:
-                    response = {'status': 'error', 'message': 'Invalid command'}
-            
-                client_socket.send(pickle.dumps(response))
-            except Exception as e:
-                print(f"Error handling client: {e}")
+    while True:
+        try:
+            request = socket.recv(1024)
+            if not request:
                 break
-            finally:
-                security_socket.close()
-                del clients[client_id]
+            request_data = pickle.loads(request)
+            command = request_data['command']
+            data = request_data['data']
+        
+            if command == 'login':
+                response = login(data)
+            elif command == 'register':
+                response = register(data)
+            elif command == 'fetch_company_data':
+                response = fetch_company_data(data)
+            elif command == 'buy':
+                response = buy(data)
+            elif command == 'sell':
+                response = sell(data)
+            elif command == 'deposit':
+                response = deposit(data)
+            elif command == 'withdraw':
+                response = withdraw(data)
+
+            else:
+                response = {'status': 'error', 'message': 'Invalid command'}
+        
+            client_socket.send(pickle.dumps(response))
+        except Exception as e:
+            print(f"Error handling client: {e}")
+            break
+        finally:
+            security_socket.close()
+            del clients[client_id]
 
 def login(data):
     """
@@ -166,8 +166,8 @@ def server():
     """
     
     try:
-        context = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        context.load_cert_chain(certfile='certs/server.crt', keyfile='certs/server.key')
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context.load_cert_chain(certfile='certs/server.crt.pem', keyfile='certs/server.key.pem')
     except ssl.SSLError as e:
         print(f"SSL error: {e}")
         return
@@ -176,13 +176,15 @@ def server():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((socket.gethostbyname(socket.gethostname()), os.getenv('PORT')))  
         server_socket.listen(5)
+        
 
         while True:
             client_socket, addr = server_socket.accept()
+            client_socket = context.wrap_socket(client_socket, server_side=True)
             client_id = addr[1]
             print(f"Accepted connection from {addr} with client ID {client_id}")
             clients[client_id] = client_socket
-            client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id, context))
+            client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
             client_handler.start()
 
 if __name__ == "__main__":
