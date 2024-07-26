@@ -6,6 +6,7 @@ train_sk_model.ipynb
 docker-compose.yml
 server/certs
 client/certs
+certs
 server/DockerFile
 client/DockerFile
 mongodata
