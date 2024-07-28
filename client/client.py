@@ -48,8 +48,6 @@ def send_request(command, data):
     # Now use server_ip and server_port in your connection logic
     client_socket.connect((server_ip, server_port))
     
-    cert = client_socket.getpeercert()
-    
     request = {'command': command, 'data': data}
     client_socket.send(pickle.dumps(request))
     

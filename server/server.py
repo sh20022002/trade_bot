@@ -171,23 +171,23 @@ def server():
     except ssl.SSLError as e:
         print(f"SSL error: {e}")
         return
-    print(f"Server listening on port {os.getenv('PORT')}...")
+    
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((socket.gethostbyname(socket.gethostname()), os.getenv('PORT')))  
         server_socket.listen(5)
         
-
-        while True:
-            client_socket, addr = server_socket.accept()
-            client_socket = context.wrap_socket(client_socket, server_side=True)
-            client_id = addr[1]
-            print(f"Accepted connection from {addr} with client ID {client_id}")
-            clients[client_id] = client_socket
-            client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
-            client_handler.start()
+        with context.wrap_socket(server_socket, server_side=True) as client_socket:
+            while True:
+                client_socket, addr = server_socket.accept()
+                client_socket = context.wrap_socket(client_socket, server_side=True)
+                client_id = addr[1]
+                print(f"Accepted connection from {addr} with client ID {client_id}")
+                clients[client_id] = client_socket
+                client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
+                client_handler.start()
 
 if __name__ == "__main__":
     server()
-    main.main()
+    
 
