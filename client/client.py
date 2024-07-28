@@ -40,7 +40,7 @@ def send_request(command, data):
     """
     client_socket = create_client_socket()
     server_ip = os.getenv('SERVER_IP')
-    server_port = socket.gethostbyname(socket.gethostname())#os.getenv('SERVER_PORT')
+    server_port = os.getenv('SERVER_PORT')
 
     if not server_ip or server_port is None:
         raise ValueError("Server IP or Port is not set correctly")

@@ -17,14 +17,24 @@ CompenyData: 'Symbol', 'Security', 'GICS Sector', 'GICS Sub-Industry', 'Headquar
 CompenyModels: reggresion model for hour and day predction, Markov chain model for hour and day for risk manegment.
 Trades: TradeID, UserID, Ticker, Quantity, Price, Timestamp, etc.
 StrategyParams: StrategyID, UserID, Parameters, etc.
+
+
 2. Server
-Backend Framework: Use socket.
-Microservices:
+Backend Framework: 
 Data Service: Collects and stores market data (scrapping.py).
 Trading Engine: Implements trading strategies and decision-making algorithms.
 User Service: Manages user authentication and account details(server.py).
 Notification Service: Sends alerts and notifications to users(mail_agnt.py or dashborad pushes).
-Communication: smtp mail agent for appdaiting users.
+Communication:
+                server <-> client
+                server <- scanner
+                server <-> database
+                scanner <-> database
+smtp mail agent for appdaiting users.
+3. Scanner
+sheres 50% of server Code
+
+
 3. Clients
 Web App: python streamlit
 Features:

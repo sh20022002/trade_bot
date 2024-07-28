@@ -1,17 +1,4 @@
-test all new code and database
-client and server and chack funcinability
-2 - find if there is a problem with the probability of the markov model for fiving near to 1 in prdection
-1 - finish update database
-
-test buy and sell - wirte the conditions for closing/ minimizing/ create new postion 
-
-front
-
-- test client and server
-- create a account streagy system
-
-dident add to all functions sma 20 and 100
-
-
-needs test of mongosync in database and client handeling
-FINSH strategy
+1. fix client server communication
+2. create scanner database and scanner server communication
+3. add trading methods to stradegy
+4. add ip script to all servieces

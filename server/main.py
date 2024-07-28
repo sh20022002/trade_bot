@@ -1,4 +1,4 @@
-import scrapping, database, server
+import scrapping, database
 import time
 
 import strategy
@@ -140,7 +140,7 @@ def initialize():
         compenies.append(sp500_compenies[1][i])
 
 
-        compeny = server.compeny(sp500_compenies[2][i], sp500_compenies[1][i])
+        compeny = database.compeny(sp500_compenies[2][i], sp500_compenies[1][i])
 
 
         compeny.GICS_Sector = sp500_compenies[3][i]
