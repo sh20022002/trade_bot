@@ -27,7 +27,10 @@ def handle_client(socket, client_id):
             request_data = pickle.loads(request)
             command = request_data['command']
             data = request_data['data']
-        
+            if command == '':
+                response = {'status': 'success'}
+                recomandations(data) # recomandations function is in main.py
+                # gets the stock recomandations from scanner
             if command == 'login':
                 response = login(data)
             elif command == 'register':
