@@ -1,4 +1,4 @@
-import scraping, database
+import scraping, database, compeny
 import time
 
 import strategy
@@ -131,7 +131,7 @@ def initialize():
     compenies = []
 
 
-    for i in range(2):
+    for i in range(len(sp500_compenies[0])):
 
 
         # print(sp500_compenies.index)
@@ -139,26 +139,16 @@ def initialize():
 
         compenies.append(sp500_compenies[1][i])
 
-
-        compeny = database.compeny(sp500_compenies[2][i], sp500_compenies[1][i])
-
-
-        compeny.GICS_Sector = sp500_compenies[3][i]
-
-
-        compeny.GICS_Sub_Industry = sp500_compenies[4][i]
-
-
-        compeny.Location = sp500_compenies[5][i]
-
-
-        compeny.CIK = sp500_compenies[6][i]
-
-
-        compeny.Founded = sp500_compenies[7][i]
+        
+        compeny1 = compeny.Compeny(compeny_name=sp500_compenies[i][1], symbol=sp500_compenies[i][0],
+                                    GICS_Sector=sp500_compenies[3][i],
+                                    GICS_Sub_Industry=sp500_compenies[4][i],
+                                    Location=sp500_compenies[5][i],
+                                    CIK=sp500_compenies[6][i],
+                                    Founded=sp500_compenies[7][i])
         
 
-        database.save_compeny(compeny)
+        database.save_compeny(compeny1)
 
     return compenies
 if __name__ == "__main__":

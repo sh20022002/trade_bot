@@ -10,8 +10,8 @@ from prediction import predict_next_state_and_probabilities, stock_and_tecnical,
 
 
 
-class compeny:
-    def __init__(self, compeny_name, symbol):
+class Compeny:
+    def __init__(self, compeny_name, symbol, *args, **kwargs):
         self.compeny_name = compeny_name
         self.symbol = symbol
         self.GICS_Sector = None
@@ -19,7 +19,7 @@ class compeny:
         self.CIK = None
         self.Founded = None
         self.Location = None
-        self.summery = get_stock_sum('short\long-none\sma\50\100\200-none\pricer-none\price-prediction')
+        self.summery = None#get_stock_sum('short\long-none\sma\50\100\200-none\pricer-none\price-prediction')
         self.price = current_stock_price(self.symbol)
         self.last_price = None
         self.sentiment = None

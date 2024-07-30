@@ -34,20 +34,19 @@ def get_hmm_model(symbol, interval):
 
 def save_compeny(company):
     '''Saves a company's information to the database.'''
-    compenies.insert_one({'name': company.name,
+    compenies.insert_one({'name': company.compeny_name,
                           'symbol': company.symbol,
-                          'Gics_Sector': company.Gics_Sector,
-                          'Gics_Sub_Industry': company.Gics_Sub_Industry,
+                          'Gics_Sector': company.GICS_Sector,
+                          'Gics_Sub_Industry': company.GICS_Sub_Industry,
                           'CIK': company.CIK,
                           'Founded': company.Founded,
                           'Location': company.Location,
                           'price': company.price,
-                          'score': company.score,
                           'sentiment': company.sentiment,
-                          'summary': company.summary,
-                          'model_1h': company.hourly,
-                          'model_1d': company.daily,
-                          'last_update': company.last_update})
+                          'summary': company.summery,})
+                        #   'model_1h': company.hourly,
+                        #   'model_1d': company.daily,
+                        #   'last_update': company.last_update})
     return True
 
 def get_compeny(symbol):

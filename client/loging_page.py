@@ -24,7 +24,7 @@ def loging_page():
     """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
-    username = st.text_input("Username", key='login')
+    username = st.text_input("Username", key='main_login')
     password = st.text_input("Password", type='password')
 
     if st.button("register"):

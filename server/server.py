@@ -175,7 +175,7 @@ def server():
     
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        server_socket.bind((socket.gethostbyname(socket.gethostname()), os.getenv('PORT')))  
+        server_socket.bind((os.getenv('IP'), os.getenv('PORT')))  
         server_socket.listen(5)
         
         with context.wrap_socket(server_socket, server_side=True) as client_socket:
