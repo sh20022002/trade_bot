@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  db:
+    image: mongo:4.4
+    container_name: db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 'te13@t$3t'
+      MONGO_INITDB_DATABASE: SmartTraid
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - SmartTraid
+    ports:
+      - '27017:27017'
+      
+  server:
+    container_name: server
+    depends_on:
+      - db
+    build:
+      context: ./server
+      dockerfile: Dockerfile.server
+    networks:
+      - SmartTraid
+    ports:
+      - '3000:3000'
+
+  client:
+    container_name: client
+    depends_on:
+      - server
+    build: 
+      context: ./client
+      dockerfile: Dockerfile.client
+    networks:
+      - SmartTraid
+    ports:
+      - '8501:8501'
+
+volumes:
+  mongodb_data:
+    driver: local
+networks:
+  SmartTraid:
+    driver: bridge

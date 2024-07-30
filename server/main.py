@@ -1,4 +1,4 @@
-import scrapping, database
+import scraping, database
 import time
 
 import strategy
@@ -24,7 +24,7 @@ def main():
 
     recmondation =  strategy.RecomendAction
 
-    while scrapping.is_nyse_open():
+    while scraping.is_nyse_open():
 
         chack_open_positions()
 
@@ -73,7 +73,7 @@ def chack_open_positions(user):
 
         # close of last hour
 
-        current_price = scrapping.current_stock_price(position.symbol)
+        current_price = scraping.current_stock_price(position.symbol)
 
         # percent change from the price when the position was open
 
@@ -81,7 +81,7 @@ def chack_open_positions(user):
 
         current_total_price = current_price * position.amount
 
-        time_in_position = scrapping.get_exchange_time() - position.date
+        time_in_position = scraping.get_exchange_time() - position.date
 
         if current_price <= position.strategy.stoploss or current_price >= position.strategy.stopprofit:
 
@@ -161,3 +161,5 @@ def initialize():
         database.save_compeny(compeny)
 
     return compenies
+if __name__ == "__main__":
+    main()

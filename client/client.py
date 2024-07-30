@@ -19,10 +19,10 @@ def create_client_socket():
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
     context.load_verify_locations("certs/server.crt.pem")
-    context.check_hostname = False
+    # context.check_hostname = False
 
 
-    client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_IP'))
+    client_socket = context.wrap_socket(client_socket, server_hostname='server')
 
     
     return client_socket
@@ -45,12 +45,13 @@ def send_request(command, data):
 
     if not server_ip or server_port is None:
         raise ValueError("Server IP or Port is not set correctly")
-
+    
+    
     # Now use server_ip and server_port in your connection logic
-    client_socket.connect((server_ip, server_port))
+    client_socket.connect((server_ip, int(server_port)))
     
     request = {'command': command, 'data': data}
-    client_socket.send(pickle.dumps(request))
+    client_socket.sendall(pickle.dumps(request))
     
     response = client_socket.recv(2048)
     client_socket.close()

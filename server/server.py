@@ -3,6 +3,7 @@ import pickle
 import threading, os, ssl
 import database, main, client_handling
 
+
 clients = {}
 
 def handle_client(socket, client_id):
@@ -27,10 +28,7 @@ def handle_client(socket, client_id):
             request_data = pickle.loads(request)
             command = request_data['command']
             data = request_data['data']
-            if command == '':
-                response = {'status': 'success'}
-                recomandations(data) # recomandations function is in main.py
-                # gets the stock recomandations from scanner
+            
             if command == 'login':
                 response = login(data)
             elif command == 'register':
@@ -190,7 +188,9 @@ def server():
                 client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
                 client_handler.start()
 
+
 if __name__ == "__main__":
     server()
+    
     
 

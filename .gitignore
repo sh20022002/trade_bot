@@ -3,10 +3,9 @@ __pycache__
 api_keys.py
 models
 train_sk_model.ipynb
-docker-compose.yml
 server/certs
 client/certs
 certs
-server/DockerFile
-client/DockerFile
+server/DockerFile.server
+client/DockerFile.client
 mongodata

@@ -24,7 +24,7 @@ def loging_page():
     """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
-    username = st.text_input("Username", key='login_username1')
+    username = st.text_input("Username", key='login')
     password = st.text_input("Password", type='password')
 
     if st.button("register"):
@@ -33,7 +33,7 @@ def loging_page():
     if st.button("Login"):
         # chacck if the password is valid
         # has a min and max length for limiting code injection
-        min_char = 8
+        min_char = 6
         max_char = 20
         if len(password) <= min_char or len(password) >= max_char:
             st.error("Please enter a valid password")

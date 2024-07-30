@@ -27,12 +27,8 @@ User Service: Manages user authentication and account details(server.py).
 Notification Service: Sends alerts and notifications to users(mail_agnt.py or dashborad pushes).
 Communication:
                 server <-> client
-                server <- scanner
                 server <-> database
-                scanner <-> database
 smtp mail agent for appdaiting users.
-3. Scanner
-sheres 50% of server Code
 
 
 3. Clients
