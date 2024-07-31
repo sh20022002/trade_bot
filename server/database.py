@@ -10,7 +10,7 @@ from functions import generate_hash
 local_host = os.getenv('DB_HOST')
 port = os.getenv('DB_PORT')
 
-mycliant = pymongo.MongoClient(local_host)
+mycliant = pymongo.MongoClient(host=local_host, port=int(port))
 mydb = mycliant['stocks-consumer']
 compenies = mydb['stocks']
 users = mydb['cliants']

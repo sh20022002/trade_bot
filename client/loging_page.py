@@ -3,6 +3,11 @@ import bcrypt
 import keyboard, os, psutil
 import register_page, app, client
 
+RANDOM_KEY = 1
+def key_gen(wiget):
+    global RANDOM_KEY
+    RANDOM_KEY += 1
+    return wiget + str(RANDOM_KEY)
 
 if 'page' not in st.session_state:
     st.session_state['page'] = 'login'
@@ -24,8 +29,8 @@ def loging_page():
     """
     st.title("SmartTraid")
     st.title("The Future of Trading.")
-    username = st.text_input("Username", key='main_login')
-    password = st.text_input("Password", type='password')
+    username = st.text_input("Username", key=key_gen('main_login_username'))
+    password = st.text_input("Password", type='password', key=key_gen('main_login_password'))
 
     if st.button("register"):
         go_to_register()

@@ -172,22 +172,28 @@ def server():
     except ssl.SSLError as e:
         print(f"SSL error: {e}")
         return
-    
+    ip = os.getenv('IP', '0.0.0.0')
+    port = os.getenv('PORT', '3000')
+    if not ip or port is None:
+        raise ValueError("IP or Port is not set correctly")
 
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
-        server_socket.bind((os.getenv('IP'), os.getenv('PORT')))  
+        server_socket.bind((ip, int(port)))  
         server_socket.listen(5)
         
         with context.wrap_socket(server_socket, server_side=True) as client_socket:
             while True:
                 client_socket, addr = server_socket.accept()
-                client_socket = context.wrap_socket(client_socket, server_side=True)
-                client_id = addr[1]
-                print(f"Accepted connection from {addr} with client ID {client_id}")
-                clients[client_id] = client_socket
-                client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
-                client_handler.start()
-
+                try:
+                    client_socket = context.wrap_socket(client_socket, server_side=True)
+                    client_id = addr[1]
+                    print(f"Accepted connection from {addr} with client ID {client_id}")
+                    clients[client_id] = client_socket
+                    client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
+                    client_handler.start()
+                except Exception as e:
+                    print(f"Error accepting connection: {e}")
+                    client_socket.close()
 
 if __name__ == "__main__":
     server()
