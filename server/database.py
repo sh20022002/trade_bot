@@ -10,7 +10,7 @@ from functions import generate_hash
 local_host = os.getenv('DB_HOST', 'localhost')
 port = os.getenv('DB_PORT', '27017')
 
-mycliant = pymongo.MongoClient(host=local_host, port=int(port))
+mycliant = pymongo.MongoClient(f'mongodb://{local_host}:{port}/')
 mydb = mycliant['stocks-consumer']
 compenies = mydb['stocks']
 users = mydb['cliants']
@@ -27,10 +27,7 @@ def remove_from_db(symbol):
     '''Removes a stock from the database based on its symbol.'''
     compenies.delete_one({'symbol': symbol})
 
-def get_hmm_model(symbol, interval):
-    '''Returns the HMM model for a given stock symbol and interval.'''
-    compeny = compenies.find_one({'symbol': symbol})
-    return compeny[f'model_{interval}']
+
 
 def save_compeny(company):
     '''Saves a company's information to the database.'''
@@ -51,27 +48,41 @@ def save_compeny(company):
 
 def get_compeny(symbol):
     '''Returns the company information for a given symbol.'''
-    compeny = mycol2.find_one({'symbol': symbol})
+    compeny = compenies.find_one({'symbol': symbol})
     return compeny
 
 def get_compenies():
     '''Returns all companies in the database.'''
-    compenies = mycol2.find()
+    compenies = compenies.find()
     return compenies
-
-def update_model(symbol, interval, pickled_model):
-    '''Updates the model for a given stock symbol and interval.'''
-    mycol2.update_one({'symbol': symbol, 'interval': interval}, {'$set': {'model': pickled_model}})
+def save_model(symbol, interval, pickled_model, update):
+    '''Saves the HMM model for a given stock symbol and interval.'''
+    models.insert_one({'interval': interval, 'model': pickled_model,'traind':{'symbol': symbol, 'last_update': update}})
     return True
 
-def get_master_model(interval):
+def save_hmm_model(symbol, interval, pickled_model, update):
+    '''Saves the HMM model for a given stock symbol and interval.'''
+    models.insert_one({'symbol': symbol, 'interval': interval, 'model': pickled_model, 'last_update': update})
+    return True
+
+def get_hmm_model(symbol, interval):
+    '''Returns the HMM model for a given stock symbol and interval.'''
+    model = models.find_one({'symbol': symbol, 'interval': interval})
+    return model
+
+def update_hmm_model(symbol, interval, pickled_model, update):
+    '''Updates the hmm model for a given stock symbol and interval.'''
+    models.update_one({'symbol': symbol, 'interval': interval, '$set':{ 'model': pickled_model, 'last_update': update}})
+    return True
+
+def get_model(interval):
     '''Returns the master model for a given interval.'''
     model = models.find_one({'interval': interval})
-    return model['model']
+    return model
 
-def update_master_model(interval, pickled_model):
+def update_model(symbol, interval, pickled_model, update):
     '''Updates the master model for a given interval.'''
-    models.update_one({'interval': interval}, {'$set': {'model': pickled_model}})
+    models.update_one({'interval': interval, '$set': {'model': pickled_model}, 'traind': {'symbol': symbol, '$set': {'last_update': update}}})
     return True
 
 #client functions

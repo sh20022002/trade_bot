@@ -38,9 +38,9 @@ def train_hmm(stock ,df, interval):
 
     else:
         pickled_model = pickle.dump(model)
-        database.update_hmm(stock, interval, pickled_model)
+        database.save_hmm_model(stock, interval, pickled_model, get_exchange_time())
     print('model saved.')
-    return name
+    return True
 
 
 def train_hmm_to_date(stock, last_update, interval):
@@ -66,7 +66,8 @@ def train_hmm_to_date(stock, last_update, interval):
         with open(path , 'rb') as file:
             model = pickle.load(file)
     else:
-        model = database.get_hmm(stock, interval) 
+        model = database.get_hmm_model(stock, interval)
+        model = pickle.load(model['model']) 
 
 
     model.fit(returns)
@@ -81,7 +82,7 @@ def train_hmm_to_date(stock, last_update, interval):
     else:
         
         pickled_model = pickle.dump(model)
-        database.update_hmm(stock, interval, pickled_model)
+        database.update_hmm_model(stock, interval, pickled_model, today)
    
     print('model saved.')
 
@@ -142,12 +143,10 @@ def train_p(X_train, X_test, y_train, y_test, stock, interval):
             print('Model not found or is empty! Creating a new model.')
 
     else:
-        try:
-            model = database.get_master_model(stock, interval)
+        
+        model = database.get_model(interval)
             # If model loading failed or didn't exist, create a new one
-        except EOFError: # or any other error
-                model = None
-    
+        model = pickle.load(model['model'])
     # If model loading failed or didn't exist, create a new one
     if model is None:
         model = RandomForestRegressor(random_state=42)
@@ -162,7 +161,7 @@ def train_p(X_train, X_test, y_train, y_test, stock, interval):
     # print('master Model saved successfully.')
     else:
         pickled_model = pickle.dump(model)
-        database.update_master_model(stock, interval, pickled_model)
+        database.update_model(stock, interval, pickled_model, get_exchange_time())
     y_pred = model.predict(X_test)
     
     mse = mean_squared_error(y_test, y_pred)

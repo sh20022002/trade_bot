@@ -61,11 +61,12 @@ class Compeny:
         df = self.get_df(interval=interval)
         df = add_all(df)
         current_return = df['Close'][0] - df['Close'][1]
-        if(self.hmm == False):
+        hmm = database.get_hmm_model(self.symbol, interval=interval)
+        if(hmm == None):
             model = train_hmm(self.symbol, df)
         else:
-            model = database.get_hmm_model(interval=interval)
-        state, probability = predict_next_state_and_probabilities(self.hmm, current_return, self.symbol)
+            model = hmm
+        state, probability = predict_next_state_and_probabilities(current_return, self.symbol)
 
         prediction = predict_next_close(self.symbol, self.get_df(interval=interval))
         
@@ -100,10 +101,6 @@ class Compeny:
         Returns:
         - str: A string representing the result of removing the stock.
         """
-        ans = database.find_s(self.symbol)
-        if ans:
-            r = database.remove_from_db(self.symbol)
-            if r:
-                return f'{self.compeny_name} removed from database!'
-        else:
-            return f'{self.compeny_name} not found in tatabase'
+        r = database.remove_from_db(self.symbol)
+        return f'{self.compeny_name} removed from database!'
+        
