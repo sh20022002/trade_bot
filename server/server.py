@@ -169,6 +169,7 @@ def server():
     try:
         context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         context.load_cert_chain(certfile='certs/server.crt.pem', keyfile='certs/server.key.pem')
+        # context.check_hostname = False
     except ssl.SSLError as e:
         print(f"SSL error: {e}")
         return
@@ -181,9 +182,9 @@ def server():
         server_socket.bind((ip, int(port)))  
         server_socket.listen(5)
         
-        with context.wrap_socket(server_socket, server_side=True) as client_socket:
+        with context.wrap_socket(server_socket, server_side=True) as server_socket:
             while True:
-                client_socket, addr = server_socket.accept()
+                client, addr = server_socket.accept()
                 try:
                     client_socket = context.wrap_socket(client_socket, server_side=True)
                     client_id = addr[1]

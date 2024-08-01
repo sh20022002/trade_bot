@@ -7,8 +7,8 @@ from functools import wraps
 
 from functions import generate_hash
 
-local_host = os.getenv('DB_HOST')
-port = os.getenv('DB_PORT')
+local_host = os.getenv('DB_HOST', 'localhost')
+port = os.getenv('DB_PORT', '27017')
 
 mycliant = pymongo.MongoClient(host=local_host, port=int(port))
 mydb = mycliant['stocks-consumer']

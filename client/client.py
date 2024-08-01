@@ -18,6 +18,7 @@ def create_client_socket():
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+    os.chdir(os.path.dirname(__file__))
     context.load_verify_locations("certs/server.crt.pem")
     # context.check_hostname = False
 
@@ -40,8 +41,8 @@ def send_request(command, data):
         any: The response received from the server.
     """
     client_socket = create_client_socket()
-    server_ip = os.getenv('SERVER_IP')
-    server_port = os.getenv('SERVER_PORT')
+    server_ip = os.getenv('SERVER_IP', 'localhost')
+    server_port = os.getenv('SERVER_PORT', '3000')
 
     if not server_ip or server_port is None:
         raise ValueError("Server IP or Port is not set correctly")
@@ -57,5 +58,3 @@ def send_request(command, data):
     client_socket.close()
     
     return pickle.loads(response)
-
-
