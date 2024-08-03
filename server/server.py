@@ -47,12 +47,12 @@ def handle_client(socket, client_id):
             else:
                 response = {'status': 'error', 'message': 'Invalid command'}
         
-            client_socket.send(pickle.dumps(response))
+            socket.send(pickle.dumps(response))
         except Exception as e:
             print(f"Error handling client: {e}")
             break
         finally:
-            security_socket.close()
+            socket.close()
             del clients[client_id]
 
 def login(data):
@@ -165,14 +165,16 @@ def server():
     """
     Start the server and listen for client connections.
     """
-    
-    try:
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-        context.load_cert_chain(certfile='certs/server.crt.pem', keyfile='certs/server.key.pem')
-        # context.check_hostname = False
-    except ssl.SSLError as e:
-        print(f"SSL error: {e}")
-        return
+    use_ssl = False
+
+    if use_ssl:
+        try:
+            context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+            context.load_cert_chain(certfile='certs/server.crt.pem', keyfile='certs/server.key.pem')
+            # context.check_hostname = False
+        except ssl.SSLError as e:
+            print(f"SSL error: {e}")
+            return
     ip = os.getenv('IP', '0.0.0.0')
     port = os.getenv('PORT', '3000')
     if not ip or port is None:
@@ -182,19 +184,20 @@ def server():
         server_socket.bind((ip, int(port)))  
         server_socket.listen(5)
         
-        with context.wrap_socket(server_socket, server_side=True) as server_socket:
-            while True:
+        if use_ssl:
+            server_socket = context.wrap_socket(server_socket, server_side=True)
+        
+        while True:
+            try:
                 client, addr = server_socket.accept()
-                try:
-                    client_socket = context.wrap_socket(client_socket, server_side=True)
-                    client_id = addr[1]
-                    print(f"Accepted connection from {addr} with client ID {client_id}")
-                    clients[client_id] = client_socket
-                    client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
-                    client_handler.start()
-                except Exception as e:
-                    print(f"Error accepting connection: {e}")
-                    client_socket.close()
+                client_id = addr[1]
+                print(f"Accepted connection from {addr} with client ID {client_id}")
+                clients[client_id] = client_socket
+                client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
+                client_handler.start()
+            except Exception as e:
+                print(f"Error accepting connection: {e}")
+                client_socket.close()
 
 if __name__ == "__main__":
     server()

@@ -15,15 +15,18 @@ def create_client_socket():
     Returns:
         socket.socket: The client socket object.
     """
+
+    use_ssl = False
+
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    if use_ssl:
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        os.chdir(os.path.dirname(__file__))
+        context.load_verify_locations("certs/server.crt.pem")
+        # context.check_hostname = False
 
-    context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-    os.chdir(os.path.dirname(__file__))
-    context.load_verify_locations("certs/server.crt.pem")
-    # context.check_hostname = False
 
-
-    client_socket = context.wrap_socket(client_socket, server_hostname='server')
+        client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_HOSTNAME', 'localhost'))
 
     
     return client_socket
