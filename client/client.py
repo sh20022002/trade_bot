@@ -16,7 +16,7 @@ def create_client_socket():
         socket.socket: The client socket object.
     """
 
-    use_ssl = False
+    use_ssl = True
 
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     if use_ssl:
@@ -57,7 +57,7 @@ def send_request(command, data):
     request = {'command': command, 'data': data}
     client_socket.sendall(pickle.dumps(request))
     
-    response = client_socket.recv(2048)
+    response = client_socket.recv(4096)
     client_socket.close()
     
     return pickle.loads(response)

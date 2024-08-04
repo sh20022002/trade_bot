@@ -165,7 +165,7 @@ def server():
     """
     Start the server and listen for client connections.
     """
-    use_ssl = False
+    use_ssl = True
 
     if use_ssl:
         try:
@@ -186,18 +186,18 @@ def server():
         
         if use_ssl:
             server_socket = context.wrap_socket(server_socket, server_side=True)
-        
         while True:
             try:
                 client, addr = server_socket.accept()
                 client_id = addr[1]
                 print(f"Accepted connection from {addr} with client ID {client_id}")
-                clients[client_id] = client_socket
-                client_handler = threading.Thread(target=handle_client, args=(client_socket, client_id))
+                clients[client_id] = client
+                client_handler = threading.Thread(target=handle_client, args=(client, client_id))
                 client_handler.start()
             except Exception as e:
                 print(f"Error accepting connection: {e}")
-                client_socket.close()
+                server_socket.close()
+                break
 
 if __name__ == "__main__":
     server()
