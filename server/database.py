@@ -4,14 +4,36 @@ import pymongo
 import os
 import pickle
 from functools import wraps
+from pymongo import MongoClient
 
 from functions import generate_hash
+from pymongo.errors import OperationFailure
+from urllib.parse import quote_plus
 
-local_host = os.getenv('DB_HOST', 'localhost')
-port = os.getenv('DB_PORT', '27017')
+# Fetch environment variables
+db_host = os.getenv('DB_HOST', 'db')
+db_port = int(os.getenv('DB_PORT', 27017))
+db_user = os.getenv('DB_USER', 'root')
+db_password = os.getenv('DB_PASSWORD', 'te13@t$3t')
+db_name = os.getenv('DB_NAME', 'SmartTraid')
 
-mycliant = pymongo.MongoClient(f'mongodb://{local_host}:{port}/')
-mydb = mycliant['stocks-consumer']
+
+# parse the URI
+db_password = quote_plus(db_password)
+db_name = quote_plus(db_name)
+
+# Create the MongoDB client
+mongo_uri = f"mongodb://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?authSource=admin"
+client = MongoClient(mongo_uri)
+
+# Test the connection
+try:
+    # The ismaster command is cheap and does not require auth.
+    client.admin.command('ismaster')
+    print("Connected to MongoDB successfully")
+except OperationFailure as e:
+    print(f"Authentication failed: {e.details}")
+    exit(1)
 compenies = mydb['stocks']
 users = mydb['cliants']
 models = mydb['models']

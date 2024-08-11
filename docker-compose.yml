@@ -6,12 +6,13 @@ services:
     container_name: db
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 'te13@t$3t'
+      MONGO_INITDB_ROOT_PASSWORD: te13@t$3t
       MONGO_INITDB_DATABASE: SmartTraid
     volumes:
       - mongodb_data:/data/db
     networks:
       - SmartTraid
+        
     ports:
       - '27017:27017'
       
@@ -23,7 +24,9 @@ services:
       context: ./server
       dockerfile: Dockerfile.server
     healthcheck:
-      test: ['CMD-SHELL', "nc -z localhost 3000 || exit 1"]
+      # test: ['CMD', 'nc', '-z', 'localhost', '3000']
+      test: ['CMD-SHELL', "curl -f https://server:3000 --cacert /certs/server.crt.pem || exit 1"]
+      # test: ['CMD-SHELL', "echo | openssl s_client -connect server:3000 -servername server -brief || exit 1"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -31,8 +34,8 @@ services:
       - SmartTraid
     ports:
       - '3000:3000'
-    # volumes:
-    #   - certs:/certs
+    volumes:
+      - certs:/certs
 
   client:
     container_name: client
@@ -42,18 +45,24 @@ services:
     build: 
       context: ./client
       dockerfile: Dockerfile.client
+    # healthcheck:
+    #   test: ['CMD-SHELL', "curl -f https://localhost:8501 --cacert /certs/server.crt.pem || exit 1"]
+    #   interval: 10s
+    #   timeout: 5s
+    #   retries: 5
     networks:
       - SmartTraid
     ports:
       - '8501:8501'
-    # volumes:
-    #   - certs:/certs
+    volumes:
+      - certs:/certs
 
 volumes:
   mongodb_data:
     driver: local
-  # certs:
-  #     driver: local
+  certs:
+    driver: local
 networks:
   SmartTraid:
     driver: bridge
+  

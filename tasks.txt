@@ -2,3 +2,4 @@
 2. create scanner database and scanner server communication
 3. add trading methods to stradegy
 4. add ip script to all servieces
+5. `version` is obsolete" in docker

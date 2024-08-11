@@ -18,18 +18,19 @@ def create_client_socket():
 
     use_ssl = True
 
-    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0)
     if use_ssl:
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        os.chdir(os.path.dirname(__file__))
-        context.load_verify_locations("certs/server.crt.pem")
+        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=os.getenv('CERT_PATH', 'cert/server.crt.pem'))
+        # context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
+        # os.chdir(os.path.dirname(__file__))
+        # context.load_verify_locations(os.getenv('CERT_PATH', 'cert/server.crt.pem'))
         # context.check_hostname = False
 
-
-        client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_HOSTNAME', 'localhost'))
+        # client_socket = ssl.wrap_socket(client_socket, ca_certs=os.getenv('CERT_PATH', 'cert/server.crt.pem'), ssl_version=ssl.PROTOCOL_TLSv1_2)
+        # client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_HOSTNAME', 'localhost'))
 
     
-    return client_socket
+    return client_socket, context
 
 
 def send_request(command, data):
@@ -43,8 +44,8 @@ def send_request(command, data):
     Returns:
         any: The response received from the server.
     """
-    client_socket = create_client_socket()
-    server_ip = os.getenv('SERVER_IP', 'localhost')
+    client_socket, context = create_client_socket()
+    server_ip = os.getenv('SERVER_IP', 'server')
     server_port = os.getenv('SERVER_PORT', '3000')
 
     if not server_ip or server_port is None:
@@ -52,7 +53,9 @@ def send_request(command, data):
     
     
     # Now use server_ip and server_port in your connection logic
-    client_socket.connect((server_ip, int(server_port)))
+    client_socket.connect((server_ip, server_port))
+    if context:
+        client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_HOSTNAME', 'localhost'))
     
     request = {'command': command, 'data': data}
     client_socket.sendall(pickle.dumps(request))
