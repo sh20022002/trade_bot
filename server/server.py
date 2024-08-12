@@ -165,9 +165,9 @@ def server():
     """
     Start the server and listen for client connections.
     """
-    use_ssl = True
+    use_ssl = os.getenv('USE_SSL', 'False')
 
-    if use_ssl:
+    if use_ssl is True:
         try:
             context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
             context.load_cert_chain(certfile='certs/server.crt.pem', keyfile='certs/server.key.pem')
@@ -180,11 +180,12 @@ def server():
     if not ip or port is None:
         raise ValueError("IP or Port is not set correctly")
 
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM, 0) as server_socket:
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server_socket:
         server_socket.bind((ip, int(port)))  
         server_socket.listen(5)
+        print(f'listening to {ip}:{port}')
         
-        if use_ssl:
+        if use_ssl is True:
             server_socket = context.wrap_socket(server_socket, server_side=True)
             # server_socket = ssl.wrap_socket(server_socket, server_side=True, keyfile='certs/server.key.pem', certfile='certs/server.crt.pem')
         while True:

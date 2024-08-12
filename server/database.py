@@ -26,14 +26,7 @@ db_name = quote_plus(db_name)
 mongo_uri = f"mongodb://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}?authSource=admin"
 client = MongoClient(mongo_uri)
 
-# Test the connection
-try:
-    # The ismaster command is cheap and does not require auth.
-    client.admin.command('ismaster')
-    print("Connected to MongoDB successfully")
-except OperationFailure as e:
-    print(f"Authentication failed: {e.details}")
-    exit(1)
+mydb = client[db_name]
 compenies = mydb['stocks']
 users = mydb['cliants']
 models = mydb['models']
