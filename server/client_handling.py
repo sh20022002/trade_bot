@@ -98,7 +98,27 @@ class client(MongoSynced):
 
     
 
-    
+    def initialize(self, client):
+        try:
+            self.ID = client['ID']
+            self.date_of_birth = client['date_of_birth']
+            self.profession = client['profession']
+            self.bank_account_number = client['bank_account_number']
+            self.bank = client['bank']
+            self.email = client['email']
+            self.phone_number = client['phone_number']
+            self.address = client['address']
+            self.city = client['city']
+            self.country = client['country']
+            self.postal_code = client['postal_code']
+            self.transactions = []
+            self.open_positions = []
+            self.portfolio = []
+            self.cash = 0
+            return True
+        except KeyError as e:
+            print(f"Missing key: {e}")
+            return False
 
 
     def protfolio__str__(self):

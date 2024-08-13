@@ -65,7 +65,7 @@ def login(data):
     return {'status': 'success', 'message': 'Logged in', 'user': res, 'companies': companies}
 
 def register(data):
-    if client_handling.client(data):
+    if client_handling.initialize(data):
         return {'status': 'success', 'message': 'Registered'}
     return {'status': 'error', 'message': 'Registration failed'}
 
