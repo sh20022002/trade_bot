@@ -1,5 +1,3 @@
-
-import streamlit as st
 import time, os
 import socket
 import ssl
@@ -9,30 +7,20 @@ def create_client_socket():
     """
     Creates a client socket.
 
-    Args:
-        port (int): The port number to connect to. Default is 9999.
-
     Returns:
         socket.socket: The client socket object.
+        ssl.SSLContext: The SSL context if SSL is enabled, otherwise None.
     """
-
-    use_ssl = os.getenv('USE_SSL', 'False')
-
+    use_ssl = os.getenv('USE_SSL', 'False').lower() == 'true'
     client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
     if use_ssl:
-        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH, cafile=os.getenv('CERT_PATH', 'cert/server.crt.pem'))
-        # context = ssl.SSLContext(ssl.PROTOCOL_TLS_CLIENT)
-        # os.chdir(os.path.dirname(__file__))
-        # context.load_verify_locations(os.getenv('CERT_PATH', 'cert/server.crt.pem'))
-        # context.check_hostname = False
-
-        # client_socket = ssl.wrap_socket(client_socket, ca_certs=os.getenv('CERT_PATH', 'cert/server.crt.pem'), ssl_version=ssl.PROTOCOL_TLSv1_2)
-        # client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_HOSTNAME', 'localhost'))
+        context = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+        cert_path = os.getenv('CERT_PATH', 'cert/server.crt.pem')
+        context.load_verify_locations(cert_path)
         return client_socket, context
-
     
     return client_socket, None
-   
 
 def send_request(command, data):
     """
@@ -47,25 +35,28 @@ def send_request(command, data):
     """
     client_socket, context = create_client_socket()
     server_ip = os.getenv('SERVER_IP', 'server')
-    server_port = os.getenv('SERVER_PORT', '3000')
+    server_port = int(os.getenv('SERVER_PORT', '3000'))
 
     if not server_ip or server_port is None:
         raise ValueError("Server IP or Port is not set correctly")
-    
-    
-    # Now use server_ip and server_port in your connection logic
-    client_socket.connect((server_ip, int(server_port)))
-    if context is True:
+
+    # Connect to the server
+    client_socket.connect((server_ip, server_port))
+
+    # Wrap the socket with SSL if SSL is enabled
+    if context is not None:
         client_socket = context.wrap_socket(client_socket, server_hostname=os.getenv('SERVER_HOSTNAME', 'localhost'))
-    
+
+    # Send the request to the server
     request = {'command': command, 'data': data}
     client_socket.sendall(pickle.dumps(request))
-    
+
+    # Receive the response from the server
     response = client_socket.recv(4096)
     client_socket.close()
-    
+
     if not response:
         raise EOFError("Received empty response from server")
-    return pickle.loads(response)
+    raise EOFError(f'{response}')
     
-
+    return pickle.loads(response)

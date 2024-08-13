@@ -5,7 +5,7 @@ from functions import generate_hash
 from scraping import get_exchange_rate, current_stock_price
 
 from database import MongoSynced
-import database
+import database, json
 
 
 # add database functions to the client class
@@ -52,46 +52,48 @@ class client(MongoSynced):
     """
 
 
-    def __init__(self, first_name, last_name, password, ID, date_of_birth, profetion, cash, bank_account_number, bank, email, phone_number, address, city, country, postal_code):
-        super().__init__(self, transactions, open_positions, protfolio, cash, stock_value)
-
-        self.name = first_name + last_name
-
-        self.username = self.name + str(ID)
-
-        self.hash = functions.generate_hash(password)
+    def __init__(self, client):
+        # super().__init__(transactions, open_positions, protfolio, cash, stock_value)
+    
+        client = json.loads(client)
+    
+        self.name = client['first_name'] + client['last_name']
+    
+        self.username = self.name + str(client['ID'])
+    
+        self.hash = generate_hash(client['password'])
                     
-
-        self.ID = ID
-
-        self.date_of_birth = date_of_birth
-
-        self.profetion = profetion
-
-        self.bank_account_number = bank_account_number
-
-        self.bank = bank
-
-        self.email = email
-
-        self.phone_number = phone_number
-
-        self.address = address
-
-        self.city = city
-
-        self.country = country
-
-        self.postal_code = postal_code
-
+    
+        self.ID = client['ID']
+    
+        self.date_of_birth = client['date_of_birth']
+    
+        self.profetion = client['profetion']
+    
+        self.bank_account_number = client['bank_account_number']
+    
+        self.bank = client['bank']
+    
+        self.email = client['email']
+    
+        self.phone_number = client['phone_number']
+    
+        self.address = client['address']
+    
+        self.city = client['city']
+    
+        self.country = client['country']
+    
+        self.postal_code = client['postal_code']
+    
         self.transactions = []
-
+    
         self.open_positions = []
-
+    
         self.protfolio = []
-
-        self.cash = cash
-
+    
+        self.cash = 0
+    
         self.stock_value = 0
 
     

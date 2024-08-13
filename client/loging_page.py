@@ -47,7 +47,7 @@ def loging_page():
             st.error("Password must contain at least 8 characters, one uppercase, one lowercase, one digit, and one special character")
 
         # check if the username is valid and not a code injection
-        elif len(username) <= min_char or len(username) >= max_char:
+        elif len(username) >= max_char:
             st.error("Please enter a valid username")
 
         else:    
