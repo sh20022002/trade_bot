@@ -17,7 +17,7 @@ def main():
     """
 
     # initialize the database
-
+    
     initialize()
 
     h_hour = 30 * 60
